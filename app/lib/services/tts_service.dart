@@ -11,21 +11,21 @@ class TtsService {
 
   Future<void> init() async {
     if (_isInitialized || kIsWeb) return;
-    
+
     _flutterTts = FlutterTts();
-    
+
     // Set Spanish language
     await _flutterTts!.setLanguage('es-ES');
     await _flutterTts!.setSpeechRate(0.5);
     await _flutterTts!.setVolume(1.0);
     await _flutterTts!.setPitch(1.0);
-    
+
     _isInitialized = true;
   }
 
   Future<void> speak(String text) async {
     if (kIsWeb || !_isInitialized || _flutterTts == null) return;
-    
+
     await _flutterTts!.stop();
     await _flutterTts!.speak(text);
   }

@@ -128,7 +128,8 @@ class WordCard extends StatelessWidget {
                           ),
                           if (!kIsWeb)
                             IconButton(
-                              icon: Icon(Icons.volume_up, color: AppTheme.primaryColor),
+                              icon: Icon(Icons.volume_up,
+                                  color: AppTheme.primaryColor),
                               onPressed: _speakWord,
                               tooltip: 'Pronounce',
                               iconSize: 24,
@@ -266,7 +267,8 @@ class WordCard extends StatelessWidget {
                       if (!kIsWeb)
                         GestureDetector(
                           onTap: _speakExample,
-                          child: Icon(Icons.volume_up, size: 18, color: Colors.amber[700]),
+                          child: Icon(Icons.volume_up,
+                              size: 18, color: Colors.amber[700]),
                         ),
                     ],
                   ),

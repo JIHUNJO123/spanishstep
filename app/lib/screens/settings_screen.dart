@@ -3,27 +3,29 @@ import 'package:provider/provider.dart';
 import '../providers/settings_provider.dart';
 import '../providers/progress_provider.dart';
 import '../config/theme.dart';
+import '../l10n/app_strings.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Settings'),
-      ),
-      body: Consumer2<SettingsProvider, ProgressProvider>(
-        builder: (context, settings, progress, _) {
-          return ListView(
+    return Consumer2<SettingsProvider, ProgressProvider>(
+      builder: (context, settings, progress, _) {
+        final lang = settings.language;
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(AppStrings.get('settings', lang)),
+          ),
+          body: ListView(
             padding: const EdgeInsets.all(16),
             children: [
               _buildSection(
-                title: 'Appearance',
+                title: AppStrings.get('appearance', lang),
                 children: [
                   SwitchListTile(
-                    title: const Text('Dark Mode'),
-                    subtitle: const Text('Enable dark theme'),
+                    title: Text(AppStrings.get('dark_mode', lang)),
+                    subtitle: Text(AppStrings.get('enable_dark_theme', lang)),
                     value: settings.isDarkMode,
                     onChanged: (value) => settings.setDarkMode(value),
                     secondary: Icon(
@@ -34,7 +36,7 @@ class SettingsScreen extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               _buildSection(
-                title: 'Translation Language',
+                title: AppStrings.get('translation_language', lang),
                 children: [
                   ...SettingsProvider.languages.entries.map((entry) {
                     return RadioListTile<String>(
@@ -50,26 +52,25 @@ class SettingsScreen extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               _buildSection(
-                title: 'Premium',
+                title: AppStrings.get('premium', lang),
                 children: [
                   ListTile(
                     leading: Icon(
                       progress.isPremium ? Icons.check_circle : Icons.lock,
                       color: progress.isPremium ? Colors.green : null,
                     ),
-                    title: const Text('Remove Ads'),
+                    title: Text(AppStrings.get('remove_ads', lang)),
                     subtitle: Text(
                       progress.isPremium
-                          ? 'Purchased - Unlimited access'
-                          : 'Unlock unlimited access for \$1.99',
+                          ? AppStrings.get('purchased_unlimited', lang)
+                          : AppStrings.get('unlock_unlimited', lang),
                     ),
                     trailing: progress.isPremium
                         ? null
                         : ElevatedButton(
                             onPressed: () {
-                              // TODO: Implement purchase
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Coming soon!')),
+                                SnackBar(content: Text(AppStrings.get('coming_soon', lang))),
                               );
                             },
                             child: const Text('\$1.99'),
@@ -78,7 +79,7 @@ class SettingsScreen extends StatelessWidget {
                   if (progress.isPremium)
                     ListTile(
                       leading: const Icon(Icons.restore),
-                      title: const Text('Restore Purchase'),
+                      title: Text(AppStrings.get('restore_purchase', lang)),
                       onTap: () {
                         // TODO: Implement restore
                       },
@@ -87,11 +88,11 @@ class SettingsScreen extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               _buildSection(
-                title: 'About',
+                title: AppStrings.get('about', lang),
                 children: [
                   ListTile(
                     leading: const Icon(Icons.privacy_tip_outlined),
-                    title: const Text('Privacy Policy'),
+                    title: Text(AppStrings.get('privacy_policy', lang)),
                     onTap: () {
                       // TODO: Open privacy policy URL
                     },
@@ -110,9 +111,9 @@ class SettingsScreen extends StatelessWidget {
                 ),
               ),
             ],
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 

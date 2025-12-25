@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/progress_provider.dart';
+import '../providers/settings_provider.dart';
 import '../services/word_service.dart';
 import '../config/theme.dart';
+import '../l10n/app_strings.dart';
 import 'word_list_screen.dart';
 import 'flashcard_screen.dart';
 import 'quiz_screen.dart';
@@ -38,143 +39,57 @@ class _HomeScreenState extends State<HomeScreen> {
       );
     }
 
-    return Scaffold(
-      body: SafeArea(
-        child: CustomScrollView(
-          slivers: [
-            SliverAppBar(
-              floating: true,
-              title: const Text(
-                'Spanish Step',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              actions: [
-                IconButton(
-                  icon: const Icon(Icons.settings),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => const SettingsScreen()),
-                    );
-                  },
-                ),
-              ],
-            ),
-            SliverPadding(
-              padding: const EdgeInsets.all(16),
-              sliver: SliverToBoxAdapter(child: _buildProgressCard()),
-            ),
-            SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              sliver: SliverToBoxAdapter(
-                child: Text(
-                  'DELE Levels',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                ),
-              ),
-            ),
-            SliverPadding(
-              padding: const EdgeInsets.all(16),
-              sliver: SliverList(
-                delegate: SliverChildListDelegate([
-                  _buildLevelSection('A1', 600, AppTheme.a1Color, 'Beginner'),
-                  const SizedBox(height: 16),
-                  _buildLevelSection('A2', 600, AppTheme.a2Color, 'Elementary'),
-                  const SizedBox(height: 16),
-                  _buildLevelSection(
-                      'B1', 1300, AppTheme.b1Color, 'Intermediate'),
-                  const SizedBox(height: 16),
-                  _buildLevelSection(
-                      'B2', 2500, AppTheme.b2Color, 'Upper-Intermediate'),
-                ]),
-              ),
-            ),
-            const SliverPadding(padding: EdgeInsets.only(bottom: 32)),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildProgressCard() {
-    return Consumer<ProgressProvider>(
-      builder: (context, progress, _) {
-        return Card(
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      "Today's Progress",
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                    if (progress.hasUnlimitedAccess)
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: Colors.green,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: const Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(Icons.all_inclusive,
-                                color: Colors.white, size: 14),
-                            SizedBox(width: 4),
-                            Text(
-                              'Unlimited',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                LinearProgressIndicator(
-                  value:
-                      progress.viewedCountToday / ProgressProvider.dailyLimit,
-                  backgroundColor: Colors.grey[200],
-                  valueColor: AlwaysStoppedAnimation(
-                    progress.hasReachedLimit && !progress.hasUnlimitedAccess
-                        ? Colors.red
-                        : AppTheme.primaryColor,
+    return Consumer<SettingsProvider>(
+      builder: (context, settings, _) {
+        final lang = settings.language;
+        return Scaffold(
+          body: SafeArea(
+            child: CustomScrollView(
+              slivers: [
+                SliverAppBar(
+                  floating: true,
+                  title: const Text(
+                    'Spanish Step',
+                    style: TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  minHeight: 8,
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                const SizedBox(height: 8),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      '${progress.viewedCountToday}/${ProgressProvider.dailyLimit} words viewed',
-                      style: TextStyle(color: Colors.grey[600], fontSize: 14),
+                  actions: [
+                    IconButton(
+                      icon: const Icon(Icons.settings),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const SettingsScreen()),
+                        );
+                      },
                     ),
-                    if (!progress.hasUnlimitedAccess &&
-                        progress.hasReachedLimit)
-                      const Text(
-                        'Limit reached',
-                        style: TextStyle(
-                          color: Colors.red,
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
                   ],
                 ),
+                SliverPadding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  sliver: SliverToBoxAdapter(
+                    child: Text(
+                      AppStrings.get('dele_levels', lang),
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                    ),
+                  ),
+                ),
+                SliverPadding(
+                  padding: const EdgeInsets.all(16),
+                  sliver: SliverList(
+                    delegate: SliverChildListDelegate([
+                      _buildLevelSection('A1', 600, AppTheme.a1Color, AppStrings.get('beginner', lang), lang),
+                      const SizedBox(height: 16),
+                      _buildLevelSection('A2', 600, AppTheme.a2Color, AppStrings.get('elementary', lang), lang),
+                      const SizedBox(height: 16),
+                      _buildLevelSection('B1', 1300, AppTheme.b1Color, AppStrings.get('intermediate', lang), lang),
+                      const SizedBox(height: 16),
+                      _buildLevelSection('B2', 2500, AppTheme.b2Color, AppStrings.get('upper_intermediate', lang), lang),
+                    ]),
+                  ),
+                ),
+                const SliverPadding(padding: EdgeInsets.only(bottom: 32)),
               ],
             ),
           ),
@@ -184,7 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildLevelSection(
-      String level, int wordCount, Color color, String subtitle) {
+      String level, int wordCount, Color color, String subtitle, String lang) {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -222,7 +137,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       Text(
-                        '$wordCount words',
+                        AppStrings.get('word_count', lang, params: {'count': wordCount}),
                         style: TextStyle(
                           color: Colors.grey[600],
                           fontSize: 14,
@@ -239,7 +154,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Expanded(
                   child: _buildModeButton(
                     icon: Icons.list_alt,
-                    label: 'Words',
+                    label: AppStrings.get('words', lang),
                     color: color,
                     onTap: () {
                       Navigator.push(
@@ -255,7 +170,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Expanded(
                   child: _buildModeButton(
                     icon: Icons.style,
-                    label: 'Flashcards',
+                    label: AppStrings.get('flashcards', lang),
                     color: color,
                     onTap: () {
                       Navigator.push(
@@ -271,7 +186,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Expanded(
                   child: _buildModeButton(
                     icon: Icons.quiz,
-                    label: 'Quiz',
+                    label: AppStrings.get('quiz', lang),
                     color: color,
                     onTap: () {
                       Navigator.push(
