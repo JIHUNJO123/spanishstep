@@ -1,0 +1,7 @@
+# Dummy pubspec.yaml for Codemagic - actual project is in /app folder
+name: spanishstep_root
+description: Root placeholder for Codemagic build
+version: 1.0.0
+
+environment:
+  sdk: ^3.7.2
