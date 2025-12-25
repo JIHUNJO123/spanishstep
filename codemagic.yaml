@@ -32,7 +32,7 @@ workflows:
             --build-number=2 \
             --export-options-plist=/Users/builder/export_options.plist
     artifacts:
-      - app/build/ios/ipa/*.ipa
+      - build/ios/ipa/*.ipa
       - /tmp/xcodebuild_logs/*.log
       - flutter_drive.log
     publishing:
