@@ -295,30 +295,27 @@ class _WordListScreenState extends State<WordListScreen> {
                   ),
                 );
               }
+              // 무료 30개 표시
               return Container(
                 margin: const EdgeInsets.only(right: 16),
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: progress.hasReachedLimit
-                      ? Colors.red.withOpacity(0.2)
-                      : Colors.blue.withOpacity(0.2),
+                  color: Colors.orange.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(
-                      progress.hasReachedLimit ? Icons.lock : Icons.visibility,
-                      color:
-                          progress.hasReachedLimit ? Colors.red : Colors.blue,
+                      Icons.lock_open,
+                      color: Colors.orange[700],
                       size: 16,
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      '${progress.viewedCountToday}/${ProgressProvider.dailyLimit}',
+                      'Free: ${ProgressProvider.dailyLimit}',
                       style: TextStyle(
-                        color:
-                            progress.hasReachedLimit ? Colors.red : Colors.blue,
+                        color: Colors.orange[700],
                         fontWeight: FontWeight.bold,
                         fontSize: 12,
                       ),
@@ -332,33 +329,30 @@ class _WordListScreenState extends State<WordListScreen> {
       ),
       body: Consumer2<ProgressProvider, SettingsProvider>(
         builder: (context, progress, settings, _) {
+          // 데이터 로드 완료 대기
+          if (!progress.isLoaded) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          
           return ListView.builder(
             controller: _scrollController,
             padding: const EdgeInsets.all(16),
             itemCount: _words.length,
             itemBuilder: (context, index) {
               final word = _words[index];
-              final canView = progress.canViewWord(word.id);
-              final isLocked = !canView;
+              
+              // 30개 제한 로직: index 기반으로 잠금 결정
+              // 무제한 액세스가 있으면 모든 단어 볼 수 있음
+              // 그렇지 않으면 처음 30개만 무료
+              final isLocked = !progress.hasUnlimitedAccess && index >= ProgressProvider.dailyLimit;
 
               return Padding(
                 padding: const EdgeInsets.only(bottom: 12),
-                child: Builder(
-                  builder: (context) {
-                    // 잠기지 않은 카드가 화면에 보이면 자동으로 조회 카운트
-                    if (!isLocked) {
-                      WidgetsBinding.instance.addPostFrameCallback((_) {
-                        progress.markWordViewed(word.id, widget.level);
-                        progress.updateLevelProgress(widget.level, index);
-                      });
-                    }
-                    return WordCard(
-                      word: word,
-                      language: settings.language,
-                      isLocked: isLocked,
-                      onTap: isLocked ? () => _showUnlockDialog() : null,
-                    );
-                  },
+                child: WordCard(
+                  word: word,
+                  language: settings.language,
+                  isLocked: isLocked,
+                  onTap: isLocked ? () => _showUnlockDialog() : null,
                 ),
               );
             },

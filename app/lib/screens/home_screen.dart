@@ -58,14 +58,16 @@ class _HomeScreenState extends State<HomeScreen> {
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (_) => const SettingsScreen()),
+                          MaterialPageRoute(
+                              builder: (_) => const SettingsScreen()),
                         );
                       },
                     ),
                   ],
                 ),
                 SliverPadding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   sliver: SliverToBoxAdapter(
                     child: Text(
                       AppStrings.get('dele_levels', lang),
@@ -79,13 +81,17 @@ class _HomeScreenState extends State<HomeScreen> {
                   padding: const EdgeInsets.all(16),
                   sliver: SliverList(
                     delegate: SliverChildListDelegate([
-                      _buildLevelSection('A1', 600, AppTheme.a1Color, AppStrings.get('beginner', lang), lang),
+                      _buildLevelSection('A1', 600, AppTheme.a1Color,
+                          AppStrings.get('beginner', lang), lang),
                       const SizedBox(height: 16),
-                      _buildLevelSection('A2', 600, AppTheme.a2Color, AppStrings.get('elementary', lang), lang),
+                      _buildLevelSection('A2', 600, AppTheme.a2Color,
+                          AppStrings.get('elementary', lang), lang),
                       const SizedBox(height: 16),
-                      _buildLevelSection('B1', 1300, AppTheme.b1Color, AppStrings.get('intermediate', lang), lang),
+                      _buildLevelSection('B1', 1300, AppTheme.b1Color,
+                          AppStrings.get('intermediate', lang), lang),
                       const SizedBox(height: 16),
-                      _buildLevelSection('B2', 2500, AppTheme.b2Color, AppStrings.get('upper_intermediate', lang), lang),
+                      _buildLevelSection('B2', 2500, AppTheme.b2Color,
+                          AppStrings.get('upper_intermediate', lang), lang),
                     ]),
                   ),
                 ),
@@ -137,7 +143,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       Text(
-                        AppStrings.get('word_count', lang, params: {'count': wordCount}),
+                        AppStrings.get('word_count', lang,
+                            params: {'count': wordCount}),
                         style: TextStyle(
                           color: Colors.grey[600],
                           fontSize: 14,

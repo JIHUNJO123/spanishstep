@@ -70,7 +70,9 @@ class SettingsScreen extends StatelessWidget {
                         : ElevatedButton(
                             onPressed: () {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text(AppStrings.get('coming_soon', lang))),
+                                SnackBar(
+                                    content: Text(
+                                        AppStrings.get('coming_soon', lang))),
                               );
                             },
                             child: const Text('\$1.99'),

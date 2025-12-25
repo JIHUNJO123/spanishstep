@@ -11,7 +11,7 @@ class AppStrings {
       'flashcards': 'Flashcards',
       'quiz': 'Quiz',
       'word_count': '{count} words',
-      
+
       // Settings
       'settings': 'Settings',
       'appearance': 'Appearance',
@@ -26,19 +26,20 @@ class AppStrings {
       'about': 'About',
       'privacy_policy': 'Privacy Policy',
       'coming_soon': 'Coming soon!',
-      
+
       // Word List
       'unlimited': 'Unlimited',
       'daily_limit_reached': 'Daily Limit Reached',
       'viewed_words': 'You\'ve viewed {count} of {limit} free words today.',
-      'watch_ad_unlock': 'Watch an ad to unlock unlimited access until midnight!',
+      'watch_ad_unlock':
+          'Watch an ad to unlock unlimited access until midnight!',
       'watch_ad_button': 'Watch Ad to Unlock',
       'remove_ads_forever': 'Remove Ads Forever - \$1.99',
       'resets_midnight': 'Resets at midnight',
       'loading': 'Loading...',
       'tap_unlock': 'Tap here',
       'watch_ad_to_unlock': 'Watch ad to unlock',
-      
+
       // Flashcard
       'tap_to_see_meaning': 'Tap to see meaning',
       'tap_to_flip_back': 'Tap to flip back',
@@ -46,7 +47,7 @@ class AppStrings {
       'next': 'Next',
       'tap_card_to_flip': 'Tap card to flip',
       'example': 'Example',
-      
+
       // Quiz
       'question': 'Question',
       'score': 'Score',
@@ -66,7 +67,7 @@ class AppStrings {
       'flashcards': '플래시카드',
       'quiz': '퀴즈',
       'word_count': '{count}개 단어',
-      
+
       // Settings
       'settings': '설정',
       'appearance': '외관',
@@ -81,7 +82,7 @@ class AppStrings {
       'about': '정보',
       'privacy_policy': '개인정보 처리방침',
       'coming_soon': '준비 중입니다!',
-      
+
       // Word List
       'unlimited': '무제한',
       'daily_limit_reached': '일일 한도 도달',
@@ -93,7 +94,7 @@ class AppStrings {
       'loading': '로딩 중...',
       'tap_unlock': '탭하여 해제',
       'watch_ad_to_unlock': '광고 보고 잠금 해제',
-      
+
       // Flashcard
       'tap_to_see_meaning': '탭하여 뜻 보기',
       'tap_to_flip_back': '탭하여 뒤집기',
@@ -101,7 +102,7 @@ class AppStrings {
       'next': '다음',
       'tap_card_to_flip': '카드를 탭하여 뒤집기',
       'example': '예문',
-      
+
       // Quiz
       'question': '문제',
       'score': '점수',
@@ -121,7 +122,7 @@ class AppStrings {
       'flashcards': 'フラッシュカード',
       'quiz': 'クイズ',
       'word_count': '{count}語',
-      
+
       // Settings
       'settings': '設定',
       'appearance': '外観',
@@ -136,7 +137,7 @@ class AppStrings {
       'about': '情報',
       'privacy_policy': 'プライバシーポリシー',
       'coming_soon': '近日公開！',
-      
+
       // Word List
       'unlimited': '無制限',
       'daily_limit_reached': '1日の制限に達しました',
@@ -148,7 +149,7 @@ class AppStrings {
       'loading': '読み込み中...',
       'tap_unlock': 'タップして解除',
       'watch_ad_to_unlock': '広告を見てロック解除',
-      
+
       // Flashcard
       'tap_to_see_meaning': 'タップして意味を見る',
       'tap_to_flip_back': 'タップして裏返す',
@@ -156,7 +157,7 @@ class AppStrings {
       'next': '次へ',
       'tap_card_to_flip': 'カードをタップして裏返す',
       'example': '例文',
-      
+
       // Quiz
       'question': '問題',
       'score': 'スコア',
@@ -176,7 +177,7 @@ class AppStrings {
       'flashcards': '闪卡',
       'quiz': '测验',
       'word_count': '{count}个单词',
-      
+
       // Settings
       'settings': '设置',
       'appearance': '外观',
@@ -191,7 +192,7 @@ class AppStrings {
       'about': '关于',
       'privacy_policy': '隐私政策',
       'coming_soon': '即将推出！',
-      
+
       // Word List
       'unlimited': '无限',
       'daily_limit_reached': '已达到每日限制',
@@ -203,7 +204,7 @@ class AppStrings {
       'loading': '加载中...',
       'tap_unlock': '点击解锁',
       'watch_ad_to_unlock': '观看广告解锁',
-      
+
       // Flashcard
       'tap_to_see_meaning': '点击查看含义',
       'tap_to_flip_back': '点击翻回',
@@ -211,7 +212,7 @@ class AppStrings {
       'next': '下一个',
       'tap_card_to_flip': '点击卡片翻转',
       'example': '例句',
-      
+
       // Quiz
       'question': '问题',
       'score': '分数',
@@ -231,7 +232,7 @@ class AppStrings {
       'flashcards': 'Flashcards',
       'quiz': 'Quiz',
       'word_count': '{count} palavras',
-      
+
       // Settings
       'settings': 'Configurações',
       'appearance': 'Aparência',
@@ -246,7 +247,7 @@ class AppStrings {
       'about': 'Sobre',
       'privacy_policy': 'Política de Privacidade',
       'coming_soon': 'Em breve!',
-      
+
       // Word List
       'unlimited': 'Ilimitado',
       'daily_limit_reached': 'Limite Diário Atingido',
@@ -258,7 +259,7 @@ class AppStrings {
       'loading': 'Carregando...',
       'tap_unlock': 'Toque para desbloquear',
       'watch_ad_to_unlock': 'Assista anúncio',
-      
+
       // Flashcard
       'tap_to_see_meaning': 'Toque para ver significado',
       'tap_to_flip_back': 'Toque para voltar',
@@ -266,7 +267,7 @@ class AppStrings {
       'next': 'Próximo',
       'tap_card_to_flip': 'Toque no cartão para virar',
       'example': 'Exemplo',
-      
+
       // Quiz
       'question': 'Questão',
       'score': 'Pontuação',
@@ -286,7 +287,7 @@ class AppStrings {
       'flashcards': 'Flashcards',
       'quiz': 'Quiz',
       'word_count': '{count} mots',
-      
+
       // Settings
       'settings': 'Paramètres',
       'appearance': 'Apparence',
@@ -301,11 +302,12 @@ class AppStrings {
       'about': 'À Propos',
       'privacy_policy': 'Politique de Confidentialité',
       'coming_soon': 'Bientôt disponible!',
-      
+
       // Word List
       'unlimited': 'Illimité',
       'daily_limit_reached': 'Limite Quotidienne Atteinte',
-      'viewed_words': 'Vous avez vu {count} sur {limit} mots gratuits aujourd\'hui.',
+      'viewed_words':
+          'Vous avez vu {count} sur {limit} mots gratuits aujourd\'hui.',
       'watch_ad_unlock': 'Regardez une pub pour débloquer jusqu\'à minuit!',
       'watch_ad_button': 'Regarder une Pub',
       'remove_ads_forever': 'Supprimer les Pubs - \$1.99',
@@ -313,7 +315,7 @@ class AppStrings {
       'loading': 'Chargement...',
       'tap_unlock': 'Appuyez pour débloquer',
       'watch_ad_to_unlock': 'Regarder une pub',
-      
+
       // Flashcard
       'tap_to_see_meaning': 'Appuyez pour voir la signification',
       'tap_to_flip_back': 'Appuyez pour retourner',
@@ -321,7 +323,7 @@ class AppStrings {
       'next': 'Suiv',
       'tap_card_to_flip': 'Appuyez sur la carte pour retourner',
       'example': 'Exemple',
-      
+
       // Quiz
       'question': 'Question',
       'score': 'Score',
@@ -332,16 +334,17 @@ class AppStrings {
     },
   };
 
-  static String get(String key, String language, {Map<String, dynamic>? params}) {
+  static String get(String key, String language,
+      {Map<String, dynamic>? params}) {
     final lang = _strings.containsKey(language) ? language : 'en';
     String text = _strings[lang]?[key] ?? _strings['en']?[key] ?? key;
-    
+
     if (params != null) {
       params.forEach((k, v) {
         text = text.replaceAll('{$k}', v.toString());
       });
     }
-    
+
     return text;
   }
 }
