@@ -45,8 +45,13 @@ class AdService {
   }
 
   void _loadAd() {
+    // Use test ad ID for development/testing
+    const bool isTestMode = false; // Set to false for production
+    final String adUnitId =
+        isTestMode ? testRewardedAdUnitIdAndroid : rewardedAdUnitIdAndroid;
+
     RewardedAd.load(
-      adUnitId: rewardedAdUnitIdAndroid, // Will be handled by platform
+      adUnitId: adUnitId,
       request: const AdRequest(),
       rewardedAdLoadCallback: RewardedAdLoadCallback(
         onAdLoaded: (ad) {

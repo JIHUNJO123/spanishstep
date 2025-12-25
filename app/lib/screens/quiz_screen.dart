@@ -5,6 +5,7 @@ import '../models/word.dart';
 import '../providers/settings_provider.dart';
 import '../services/word_service.dart';
 import '../config/theme.dart';
+import '../l10n/app_strings.dart';
 
 class QuizScreen extends StatefulWidget {
   final String level;
@@ -152,7 +153,6 @@ class _QuizScreenState extends State<QuizScreen> {
       body: Consumer<SettingsProvider>(
         builder: (context, settings, _) {
           final question = _questions[_currentIndex];
-          final translation = question.word.translations[settings.language];
 
           return Column(
             children: [
@@ -188,7 +188,8 @@ class _QuizScreenState extends State<QuizScreen> {
                   child: Column(
                     children: [
                       Text(
-                        'What does this word mean?',
+                        AppStrings.get(
+                            'what_does_word_mean', settings.language),
                         style: TextStyle(
                           fontSize: 16,
                           color: Colors.grey[600],
@@ -202,25 +203,13 @@ class _QuizScreenState extends State<QuizScreen> {
                           color: AppTheme.primaryColor.withOpacity(0.1),
                           borderRadius: BorderRadius.circular(16),
                         ),
-                        child: Column(
-                          children: [
-                            Text(
-                              question.word.word,
-                              style: const TextStyle(
-                                fontSize: 32,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              question.word.partOfSpeech,
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.grey[600],
-                                fontStyle: FontStyle.italic,
-                              ),
-                            ),
-                          ],
+                        child: Text(
+                          question.word.word,
+                          style: const TextStyle(
+                            fontSize: 32,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textAlign: TextAlign.center,
                         ),
                       ),
                       const SizedBox(height: 32),

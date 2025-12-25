@@ -1,3 +1,4 @@
+import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 
@@ -8,19 +9,54 @@ class TtsService {
 
   FlutterTts? _flutterTts;
   bool _isInitialized = false;
+  double _volume = 1.0;
+  double _speechRate = 0.45;
 
   Future<void> init() async {
     if (_isInitialized || kIsWeb) return;
 
     _flutterTts = FlutterTts();
 
+    // Android specific settings for better volume
+    if (!kIsWeb && Platform.isAndroid) {
+      // Use STREAM_MUSIC for louder volume (follows media volume)
+      await _flutterTts!.setSharedInstance(true);
+      // Set audio focus mode
+      await _flutterTts!.setIosAudioCategory(
+        IosTextToSpeechAudioCategory.playback,
+        [
+          IosTextToSpeechAudioCategoryOptions.defaultToSpeaker,
+          IosTextToSpeechAudioCategoryOptions.duckOthers,
+        ],
+        IosTextToSpeechAudioMode.defaultMode,
+      );
+    }
+
     // Set Spanish language
     await _flutterTts!.setLanguage('es-ES');
-    await _flutterTts!.setSpeechRate(0.5);
-    await _flutterTts!.setVolume(1.0);
+    await _flutterTts!.setSpeechRate(_speechRate);
+    await _flutterTts!.setVolume(_volume);
     await _flutterTts!.setPitch(1.0);
 
+    // Queue mode and completion
+    await _flutterTts!.setQueueMode(1);
+    await _flutterTts!.awaitSpeakCompletion(true);
+
     _isInitialized = true;
+  }
+
+  Future<void> setVolume(double volume) async {
+    _volume = volume;
+    if (_flutterTts != null) {
+      await _flutterTts!.setVolume(volume);
+    }
+  }
+
+  Future<void> setSpeechRate(double rate) async {
+    _speechRate = rate;
+    if (_flutterTts != null) {
+      await _flutterTts!.setSpeechRate(rate);
+    }
   }
 
   Future<void> speak(String text) async {

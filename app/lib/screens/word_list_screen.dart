@@ -26,12 +26,19 @@ class _WordListScreenState extends State<WordListScreen> {
   List<Word> _words = [];
   bool _isLoading = true;
   bool _isAdLoading = false;
+  bool _scrollRestored = false;
 
   @override
   void initState() {
     super.initState();
     _loadWords();
     _adService.loadRewardedAd();
+    _scrollController.addListener(_onScroll);
+  }
+
+  void _restoreScrollPosition() {
+    if (_scrollRestored) return;
+    _scrollRestored = true;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final progress = context.read<ProgressProvider>();
@@ -40,14 +47,22 @@ class _WordListScreenState extends State<WordListScreen> {
         _scrollController.jumpTo(savedOffset);
       }
     });
-
-    _scrollController.addListener(_onScroll);
   }
 
   void _onScroll() {
-    context
-        .read<ProgressProvider>()
-        .saveScrollPosition(widget.level, _scrollController.offset);
+    final progress = context.read<ProgressProvider>();
+    progress.saveScrollPosition(widget.level, _scrollController.offset);
+
+    // 현재 보이는 단어 인덱스 계산 (대략적인 카드 높이 기준)
+    if (_words.isNotEmpty && _scrollController.hasClients) {
+      // 카드 높이(약 200) + 패딩(12) + 상단 패딩(16) 고려
+      const cardHeight = 212.0;
+      final currentIndex = (_scrollController.offset / cardHeight).floor();
+      final clampedIndex = currentIndex.clamp(0, _words.length - 1);
+
+      // 더 앞으로 진행했을 때만 업데이트
+      progress.updateLevelProgress(widget.level, clampedIndex);
+    }
   }
 
   Future<void> _loadWords() async {
@@ -56,6 +71,8 @@ class _WordListScreenState extends State<WordListScreen> {
       _words = _wordService.getWordsForLevel(widget.level);
       _isLoading = false;
     });
+    // 데이터 로드 후 스크롤 복원
+    _restoreScrollPosition();
   }
 
   @override
@@ -147,8 +164,9 @@ class _WordListScreenState extends State<WordListScreen> {
                             ),
                           )
                         : const Icon(Icons.play_circle_outline),
-                    label: Text(
-                        _isAdLoading ? 'Loading...' : 'Watch Ad to Unlock'),
+                    label: Text(_isAdLoading
+                        ? 'Loading...'
+                        : 'Watch Ad to Unlock (Resets at midnight)'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppTheme.primaryColor,
                       foregroundColor: Colors.white,
@@ -180,18 +198,6 @@ class _WordListScreenState extends State<WordListScreen> {
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.access_time, size: 16, color: Colors.grey[500]),
-                    const SizedBox(width: 4),
-                    Text(
-                      'Resets at midnight',
-                      style: TextStyle(fontSize: 12, color: Colors.grey[500]),
-                    ),
-                  ],
                 ),
                 const SizedBox(height: 8),
               ],
@@ -267,6 +273,48 @@ class _WordListScreenState extends State<WordListScreen> {
           ],
         ),
         actions: [
+          // 예문 토글 버튼
+          Consumer<SettingsProvider>(
+            builder: (context, settings, _) {
+              return IconButton(
+                icon: Icon(
+                  settings.showExample
+                      ? Icons.format_quote
+                      : Icons.format_quote_outlined,
+                  color: settings.showExample ? Colors.amber[700] : Colors.grey,
+                ),
+                tooltip: settings.showExample ? 'Hide Example' : 'Show Example',
+                onPressed: () {
+                  settings.toggleShowExample();
+                },
+              );
+            },
+          ),
+          // 영어 뜻 토글 버튼
+          Consumer<SettingsProvider>(
+            builder: (context, settings, _) {
+              // 언어가 영어일 때는 토글 버튼 숨김
+              if (settings.language == 'en') {
+                return const SizedBox.shrink();
+              }
+              return IconButton(
+                icon: Icon(
+                  settings.showEnglishDefinition
+                      ? Icons.translate
+                      : Icons.translate_outlined,
+                  color: settings.showEnglishDefinition
+                      ? AppTheme.primaryColor
+                      : Colors.grey,
+                ),
+                tooltip: settings.showEnglishDefinition
+                    ? 'Hide English'
+                    : 'Show English',
+                onPressed: () {
+                  settings.toggleShowEnglishDefinition();
+                },
+              );
+            },
+          ),
           Consumer<ProgressProvider>(
             builder: (context, progress, _) {
               // 무제한 액세스일 때만 표시
@@ -307,18 +355,30 @@ class _WordListScreenState extends State<WordListScreen> {
           if (!progress.isLoaded) {
             return const Center(child: CircularProgressIndicator());
           }
-          
+
+          // 마지막으로 본 위치 가져오기
+          final lastIndex = progress.getLevelProgress(widget.level);
+          // 무료 범위: 마지막 위치 기준 앞뒤로 15개씩 (총 30개)
+          final halfRange = ProgressProvider.dailyLimit ~/ 2; // 15
+          final lowerBound =
+              (lastIndex - halfRange).clamp(0, _words.length - 1);
+          // 처음엔 30개 무료: lastIndex + (30 - 이미 앞에서 사용한 개수)
+          final usedBefore = lastIndex - lowerBound;
+          final upperBound =
+              (lastIndex + (ProgressProvider.dailyLimit - 1 - usedBefore))
+                  .clamp(0, _words.length - 1);
+
           return ListView.builder(
             controller: _scrollController,
             padding: const EdgeInsets.all(16),
             itemCount: _words.length,
             itemBuilder: (context, index) {
               final word = _words[index];
-              
-              // 30개 제한 로직: index 기반으로 잠금 결정
+
+              // 마지막 위치 기준 앞뒤 15개씩 무료
               // 무제한 액세스가 있으면 모든 단어 볼 수 있음
-              // 그렇지 않으면 처음 30개만 무료
-              final isLocked = !progress.hasUnlimitedAccess && index >= ProgressProvider.dailyLimit;
+              final isInFreeRange = index >= lowerBound && index <= upperBound;
+              final isLocked = !progress.hasUnlimitedAccess && !isInFreeRange;
 
               return Padding(
                 padding: const EdgeInsets.only(bottom: 12),

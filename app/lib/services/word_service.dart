@@ -25,9 +25,11 @@ class WordService {
 
     for (final level in ['a1', 'a2', 'b1', 'b2']) {
       try {
-        final jsonString = await rootBundle.loadString('assets/data/${level}_words.json');
+        final jsonString =
+            await rootBundle.loadString('assets/data/${level}_words.json');
         final List<dynamic> jsonList = json.decode(jsonString);
-        _wordsByLevel[level.toUpperCase()] = jsonList.map((e) => Word.fromJson(e)).toList();
+        _wordsByLevel[level.toUpperCase()] =
+            jsonList.map((e) => Word.fromJson(e)).toList();
       } catch (e) {
         print('Error loading $level words: $e');
         _wordsByLevel[level.toUpperCase()] = [];
@@ -39,6 +41,14 @@ class WordService {
 
   List<Word> getWordsForLevel(String level) {
     return _wordsByLevel[level.toUpperCase()] ?? [];
+  }
+
+  List<Word> getAllWords() {
+    final all = <Word>[];
+    for (final level in ['A1', 'A2', 'B1', 'B2']) {
+      all.addAll(_wordsByLevel[level] ?? []);
+    }
+    return all;
   }
 
   Word? getWordById(int id) {

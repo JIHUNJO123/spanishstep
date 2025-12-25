@@ -23,6 +23,7 @@ class AppStrings {
       'purchased_unlimited': 'Purchased - Unlimited access',
       'unlock_unlimited': 'Unlock unlimited access for \$1.99',
       'restore_purchase': 'Restore Purchase',
+      'restore_complete': 'Purchase restored',
       'about': 'About',
       'privacy_policy': 'Privacy Policy',
       'coming_soon': 'Coming soon!',
@@ -55,6 +56,39 @@ class AppStrings {
       'your_score': 'Your Score',
       'try_again': 'Try Again',
       'back_home': 'Back to Home',
+      'what_does_word_mean': 'What does this word mean?',
+
+      // Favorites
+      'favorites': 'Favorites',
+      'no_favorites': 'No favorites yet',
+      'add_favorites_hint': 'Tap the heart icon on words to add them here',
+      'added_to_favorites': 'Added to favorites',
+      'removed_from_favorites': 'Removed from favorites',
+
+      // English Definition Toggle
+      'show_english': 'Show English',
+      'show_english_definition': 'Show English Definition',
+      'english_definition_hint': 'Display English definition below translation',
+
+      // Example Toggle
+      'show_example': 'Show Example',
+      'show_example_sentence': 'Show Example Sentence',
+      'example_hint': 'Display example sentence on word cards',
+
+      // Favorites Quiz/Flashcard
+      'favorites_quiz': 'Favorites Quiz',
+      'favorites_flashcards': 'Favorites Flashcards',
+      'need_favorites': 'Add at least {count} favorites to start',
+
+      // TTS Settings
+      'tts_settings': 'Voice Settings',
+      'tts_volume': 'Volume',
+      'tts_speed': 'Speed',
+      'test_tts': 'Test Voice',
+      'speed_slow': 'Slow',
+      'speed_normal': 'Normal',
+      'speed_fast': 'Fast',
+      'speed_very_fast': 'Very Fast',
     },
     'ko': {
       // Home
@@ -79,6 +113,7 @@ class AppStrings {
       'purchased_unlimited': '구매 완료 - 무제한 이용',
       'unlock_unlimited': '\$1.99로 무제한 이용',
       'restore_purchase': '구매 복원',
+      'restore_complete': '구매가 복원되었습니다',
       'about': '정보',
       'privacy_policy': '개인정보 처리방침',
       'coming_soon': '준비 중입니다!',
@@ -110,6 +145,39 @@ class AppStrings {
       'your_score': '당신의 점수',
       'try_again': '다시 시도',
       'back_home': '홈으로',
+      'what_does_word_mean': '이 단어의 뜻은?',
+
+      // Favorites
+      'favorites': '즐겨찾기',
+      'no_favorites': '즐겨찾기가 없습니다',
+      'add_favorites_hint': '단어의 하트 아이콘을 탭하여 추가하세요',
+      'added_to_favorites': '즐겨찾기에 추가됨',
+      'removed_from_favorites': '즐겨찾기에서 삭제됨',
+
+      // English Definition Toggle
+      'show_english': '영어 표시',
+      'show_english_definition': '영어 뜻 표시',
+      'english_definition_hint': '번역 아래에 영어 뜻 표시',
+
+      // Example Toggle
+      'show_example': '예문 표시',
+      'show_example_sentence': '예문 표시',
+      'example_hint': '단어 카드에 예문 표시',
+
+      // Favorites Quiz/Flashcard
+      'favorites_quiz': '즐겨찾기 퀴즈',
+      'favorites_flashcards': '즐겨찾기 플래시카드',
+      'need_favorites': '시작하려면 즐겨찾기 {count}개 이상 필요',
+
+      // TTS Settings
+      'tts_settings': '음성 설정',
+      'tts_volume': '음량',
+      'tts_speed': '속도',
+      'test_tts': '음성 테스트',
+      'speed_slow': '느림',
+      'speed_normal': '보통',
+      'speed_fast': '빠름',
+      'speed_very_fast': '매우 빠름',
     },
     'ja': {
       // Home
@@ -134,6 +202,7 @@ class AppStrings {
       'purchased_unlimited': '購入済み - 無制限アクセス',
       'unlock_unlimited': '\$1.99で無制限アクセス',
       'restore_purchase': '購入を復元',
+      'restore_complete': '購入が復元されました',
       'about': '情報',
       'privacy_policy': 'プライバシーポリシー',
       'coming_soon': '近日公開！',
@@ -165,6 +234,39 @@ class AppStrings {
       'your_score': 'あなたのスコア',
       'try_again': '再挑戦',
       'back_home': 'ホームへ',
+      'what_does_word_mean': 'この単語の意味は？',
+
+      // Favorites
+      'favorites': 'お気に入り',
+      'no_favorites': 'お気に入りがありません',
+      'add_favorites_hint': '単語のハートアイコンをタップして追加',
+      'added_to_favorites': 'お気に入りに追加',
+      'removed_from_favorites': 'お気に入りから削除',
+
+      // English Definition Toggle
+      'show_english': '英語表示',
+      'show_english_definition': '英語の意味を表示',
+      'english_definition_hint': '翻訳の下に英語の意味を表示',
+
+      // Example Toggle
+      'show_example': '例文表示',
+      'show_example_sentence': '例文を表示',
+      'example_hint': '単語カードに例文を表示',
+
+      // Favorites Quiz/Flashcard
+      'favorites_quiz': 'お気に入りクイズ',
+      'favorites_flashcards': 'お気に入りフラッシュカード',
+      'need_favorites': '開始するには{count}個以上のお気に入りが必要',
+
+      // TTS Settings
+      'tts_settings': '音声設定',
+      'tts_volume': '音量',
+      'tts_speed': '速度',
+      'test_tts': '音声テスト',
+      'speed_slow': '遅い',
+      'speed_normal': '普通',
+      'speed_fast': '速い',
+      'speed_very_fast': 'とても速い',
     },
     'zh': {
       // Home
@@ -189,6 +291,7 @@ class AppStrings {
       'purchased_unlimited': '已购买 - 无限访问',
       'unlock_unlimited': '\$1.99解锁无限访问',
       'restore_purchase': '恢复购买',
+      'restore_complete': '购买已恢复',
       'about': '关于',
       'privacy_policy': '隐私政策',
       'coming_soon': '即将推出！',
@@ -220,6 +323,39 @@ class AppStrings {
       'your_score': '你的分数',
       'try_again': '再试一次',
       'back_home': '返回首页',
+      'what_does_word_mean': '这个单词是什么意思？',
+
+      // Favorites
+      'favorites': '收藏夹',
+      'no_favorites': '暂无收藏',
+      'add_favorites_hint': '点击单词的心形图标添加收藏',
+      'added_to_favorites': '已添加到收藏',
+      'removed_from_favorites': '已从收藏中移除',
+
+      // English Definition Toggle
+      'show_english': '显示英语',
+      'show_english_definition': '显示英语释义',
+      'english_definition_hint': '在翻译下方显示英语释义',
+
+      // Example Toggle
+      'show_example': '显示例句',
+      'show_example_sentence': '显示例句',
+      'example_hint': '在单词卡片上显示例句',
+
+      // Favorites Quiz/Flashcard
+      'favorites_quiz': '收藏测验',
+      'favorites_flashcards': '收藏闪卡',
+      'need_favorites': '需要{count}个以上的收藏才能开始',
+
+      // TTS Settings
+      'tts_settings': '语音设置',
+      'tts_volume': '音量',
+      'tts_speed': '速度',
+      'test_tts': '语音测试',
+      'speed_slow': '慢',
+      'speed_normal': '正常',
+      'speed_fast': '快',
+      'speed_very_fast': '非常快',
     },
     'pt': {
       // Home
@@ -244,6 +380,7 @@ class AppStrings {
       'purchased_unlimited': 'Comprado - Acesso ilimitado',
       'unlock_unlimited': 'Desbloqueie acesso ilimitado por \$1.99',
       'restore_purchase': 'Restaurar Compra',
+      'restore_complete': 'Compra restaurada',
       'about': 'Sobre',
       'privacy_policy': 'Política de Privacidade',
       'coming_soon': 'Em breve!',
@@ -275,6 +412,40 @@ class AppStrings {
       'your_score': 'Sua Pontuação',
       'try_again': 'Tentar Novamente',
       'back_home': 'Voltar ao Início',
+      'what_does_word_mean': 'O que significa esta palavra?',
+
+      // Favorites
+      'favorites': 'Favoritos',
+      'no_favorites': 'Sem favoritos ainda',
+      'add_favorites_hint': 'Toque no coração para adicionar palavras aqui',
+      'added_to_favorites': 'Adicionado aos favoritos',
+      'removed_from_favorites': 'Removido dos favoritos',
+
+      // English Definition Toggle
+      'show_english': 'Mostrar inglês',
+      'show_english_definition': 'Mostrar definição em inglês',
+      'english_definition_hint':
+          'Exibir definição em inglês abaixo da tradução',
+
+      // Example Toggle
+      'show_example': 'Mostrar exemplo',
+      'show_example_sentence': 'Mostrar frase de exemplo',
+      'example_hint': 'Exibir frase de exemplo nos cartões',
+
+      // Favorites Quiz/Flashcard
+      'favorites_quiz': 'Quiz de Favoritos',
+      'favorites_flashcards': 'Flashcards de Favoritos',
+      'need_favorites': 'Adicione pelo menos {count} favoritos para começar',
+
+      // TTS Settings
+      'tts_settings': 'Configurações de Voz',
+      'tts_volume': 'Volume',
+      'tts_speed': 'Velocidade',
+      'test_tts': 'Testar Voz',
+      'speed_slow': 'Lento',
+      'speed_normal': 'Normal',
+      'speed_fast': 'Rápido',
+      'speed_very_fast': 'Muito Rápido',
     },
     'fr': {
       // Home
@@ -299,7 +470,7 @@ class AppStrings {
       'purchased_unlimited': 'Acheté - Accès illimité',
       'unlock_unlimited': 'Débloquer l\'accès illimité pour \$1.99',
       'restore_purchase': 'Restaurer l\'Achat',
-      'about': 'À Propos',
+      'restore_complete': 'Achat restauré', 'about': 'À Propos',
       'privacy_policy': 'Politique de Confidentialité',
       'coming_soon': 'Bientôt disponible!',
 
@@ -331,6 +502,40 @@ class AppStrings {
       'your_score': 'Votre Score',
       'try_again': 'Réessayer',
       'back_home': 'Retour à l\'Accueil',
+      'what_does_word_mean': 'Que signifie ce mot?',
+
+      // Favorites
+      'favorites': 'Favoris',
+      'no_favorites': 'Pas encore de favoris',
+      'add_favorites_hint': 'Appuyez sur le cœur pour ajouter des mots ici',
+      'added_to_favorites': 'Ajouté aux favoris',
+      'removed_from_favorites': 'Supprimé des favoris',
+
+      // English Definition Toggle
+      'show_english': 'Afficher anglais',
+      'show_english_definition': 'Afficher la définition anglaise',
+      'english_definition_hint':
+          'Afficher la définition anglaise sous la traduction',
+
+      // Example Toggle
+      'show_example': 'Afficher exemple',
+      'show_example_sentence': 'Afficher la phrase d\'exemple',
+      'example_hint': 'Afficher la phrase d\'exemple sur les cartes',
+
+      // Favorites Quiz/Flashcard
+      'favorites_quiz': 'Quiz des Favoris',
+      'favorites_flashcards': 'Flashcards des Favoris',
+      'need_favorites': 'Ajoutez au moins {count} favoris pour commencer',
+
+      // TTS Settings
+      'tts_settings': 'Paramètres Vocaux',
+      'tts_volume': 'Volume',
+      'tts_speed': 'Vitesse',
+      'test_tts': 'Tester la Voix',
+      'speed_slow': 'Lent',
+      'speed_normal': 'Normal',
+      'speed_fast': 'Rapide',
+      'speed_very_fast': 'Très Rapide',
     },
   };
 

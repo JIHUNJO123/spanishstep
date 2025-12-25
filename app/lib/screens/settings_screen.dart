@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:provider/provider.dart';
 import '../providers/settings_provider.dart';
 import '../providers/progress_provider.dart';
 import '../config/theme.dart';
 import '../l10n/app_strings.dart';
+import '../services/tts_service.dart';
+import '../services/purchase_service.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -48,6 +51,73 @@ class SettingsScreen extends StatelessWidget {
                       },
                     );
                   }),
+                  // 영어 뜻 표시 토글 (언어가 영어가 아닐 때만)
+                  if (settings.language != 'en') const Divider(height: 1),
+                  if (settings.language != 'en')
+                    SwitchListTile(
+                      title:
+                          Text(AppStrings.get('show_english_definition', lang)),
+                      subtitle:
+                          Text(AppStrings.get('english_definition_hint', lang)),
+                      value: settings.showEnglishDefinition,
+                      onChanged: (value) =>
+                          settings.setShowEnglishDefinition(value),
+                      secondary: const Icon(Icons.translate),
+                    ),
+                  // 예문 표시 토글
+                  const Divider(height: 1),
+                  SwitchListTile(
+                    title: Text(AppStrings.get('show_example_sentence', lang)),
+                    subtitle: Text(AppStrings.get('example_hint', lang)),
+                    value: settings.showExample,
+                    onChanged: (value) => settings.setShowExample(value),
+                    secondary:
+                        Icon(Icons.format_quote, color: Colors.amber[700]),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              _buildSection(
+                title: AppStrings.get('tts_settings', lang),
+                children: [
+                  ListTile(
+                    leading: const Icon(Icons.volume_up),
+                    title: Text(AppStrings.get('tts_volume', lang)),
+                    subtitle: Slider(
+                      value: settings.ttsVolume,
+                      min: 0.0,
+                      max: 1.0,
+                      divisions: 10,
+                      label: '${(settings.ttsVolume * 100).round()}%',
+                      onChanged: (value) {
+                        settings.setTtsVolume(value);
+                        TtsService().setVolume(value);
+                      },
+                    ),
+                  ),
+                  const Divider(height: 1),
+                  ListTile(
+                    leading: const Icon(Icons.speed),
+                    title: Text(AppStrings.get('tts_speed', lang)),
+                    subtitle: Slider(
+                      value: settings.ttsSpeed,
+                      min: 0.1,
+                      max: 1.0,
+                      divisions: 9,
+                      label: _getSpeedLabel(settings.ttsSpeed, lang),
+                      onChanged: (value) {
+                        settings.setTtsSpeed(value);
+                        TtsService().setSpeechRate(value);
+                      },
+                    ),
+                  ),
+                  Center(
+                    child: TextButton.icon(
+                      onPressed: () => TtsService().speak('Hola, ¿cómo estás?'),
+                      icon: const Icon(Icons.play_arrow),
+                      label: Text(AppStrings.get('test_tts', lang)),
+                    ),
+                  ),
                 ],
               ),
               const SizedBox(height: 16),
@@ -56,34 +126,68 @@ class SettingsScreen extends StatelessWidget {
                 children: [
                   ListTile(
                     leading: Icon(
-                      progress.isPremium ? Icons.check_circle : Icons.lock,
-                      color: progress.isPremium ? Colors.green : null,
+                      progress.isPremium ||
+                              (!kIsWeb && PurchaseService.instance.adsRemoved)
+                          ? Icons.check_circle
+                          : Icons.lock,
+                      color: progress.isPremium ||
+                              (!kIsWeb && PurchaseService.instance.adsRemoved)
+                          ? Colors.green
+                          : null,
                     ),
                     title: Text(AppStrings.get('remove_ads', lang)),
                     subtitle: Text(
-                      progress.isPremium
+                      progress.isPremium ||
+                              (!kIsWeb && PurchaseService.instance.adsRemoved)
                           ? AppStrings.get('purchased_unlimited', lang)
                           : AppStrings.get('unlock_unlimited', lang),
                     ),
-                    trailing: progress.isPremium
+                    trailing: progress.isPremium ||
+                            (!kIsWeb && PurchaseService.instance.adsRemoved)
                         ? null
                         : ElevatedButton(
-                            onPressed: () {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                    content: Text(
-                                        AppStrings.get('coming_soon', lang))),
-                              );
+                            onPressed: () async {
+                              if (kIsWeb) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: Text(
+                                          AppStrings.get('coming_soon', lang))),
+                                );
+                                return;
+                              }
+                              final result =
+                                  await PurchaseService.instance.buyRemoveAds();
+                              if (!result && context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: Text(PurchaseService
+                                              .instance.errorMessage ??
+                                          'Purchase failed')),
+                                );
+                              }
                             },
-                            child: const Text('\$1.99'),
+                            child: Text(
+                              kIsWeb
+                                  ? '\$1.99'
+                                  : (PurchaseService.instance
+                                          .getRemoveAdsPrice() ??
+                                      '\$1.99'),
+                            ),
                           ),
                   ),
-                  if (progress.isPremium)
+                  if (!progress.isPremium && !kIsWeb)
                     ListTile(
                       leading: const Icon(Icons.restore),
                       title: Text(AppStrings.get('restore_purchase', lang)),
-                      onTap: () {
-                        // TODO: Implement restore
+                      onTap: () async {
+                        await PurchaseService.instance.restorePurchases();
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                                content: Text(
+                                    AppStrings.get('restore_complete', lang))),
+                          );
+                        }
                       },
                     ),
                 ],
@@ -140,5 +244,12 @@ class SettingsScreen extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String _getSpeedLabel(double speed, String lang) {
+    if (speed <= 0.3) return AppStrings.get('speed_slow', lang);
+    if (speed <= 0.5) return AppStrings.get('speed_normal', lang);
+    if (speed <= 0.7) return AppStrings.get('speed_fast', lang);
+    return AppStrings.get('speed_very_fast', lang);
   }
 }

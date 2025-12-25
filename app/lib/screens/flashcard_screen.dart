@@ -5,6 +5,7 @@ import '../models/word.dart';
 import '../providers/settings_provider.dart';
 import '../services/word_service.dart';
 import '../config/theme.dart';
+import '../l10n/app_strings.dart';
 
 class FlashcardScreen extends StatefulWidget {
   final String level;
@@ -82,15 +83,39 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
           ],
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.shuffle),
-            onPressed: () {
-              setState(() {
-                _words.shuffle(Random());
-                _flippedCards.clear();
-                _pageController.jumpToPage(0);
-                _currentIndex = 0;
-              });
+          // 예문 토글 버튼
+          Consumer<SettingsProvider>(
+            builder: (context, settings, _) {
+              return IconButton(
+                icon: Icon(
+                  settings.showExample
+                      ? Icons.format_quote
+                      : Icons.format_quote_outlined,
+                  color: settings.showExample ? Colors.amber[700] : Colors.grey,
+                ),
+                tooltip: settings.showExample ? 'Hide Example' : 'Show Example',
+                onPressed: () => settings.toggleShowExample(),
+              );
+            },
+          ),
+          // 영어 뜻 토글 버튼
+          Consumer<SettingsProvider>(
+            builder: (context, settings, _) {
+              if (settings.language == 'en') return const SizedBox.shrink();
+              return IconButton(
+                icon: Icon(
+                  settings.showEnglishDefinition
+                      ? Icons.translate
+                      : Icons.translate_outlined,
+                  color: settings.showEnglishDefinition
+                      ? AppTheme.primaryColor
+                      : Colors.grey,
+                ),
+                tooltip: settings.showEnglishDefinition
+                    ? 'Hide English'
+                    : 'Show English',
+                onPressed: () => settings.toggleShowEnglishDefinition(),
+              );
             },
           ),
         ],
@@ -172,10 +197,6 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
                   icon: const Icon(Icons.arrow_back),
                   label: const Text('Prev'),
                 ),
-                Text(
-                  'Tap card to flip',
-                  style: TextStyle(color: Colors.grey[500], fontSize: 12),
-                ),
                 ElevatedButton.icon(
                   onPressed: _currentIndex < _words.length - 1
                       ? () => _pageController.nextPage(
@@ -195,6 +216,8 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
   }
 
   Widget _buildFrontCard(Word word) {
+    final settings = context.watch<SettingsProvider>();
+
     return Card(
       key: const ValueKey('front'),
       elevation: 8,
@@ -213,28 +236,21 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 16),
-            Text(
-              word.partOfSpeech,
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.grey[600],
-                fontStyle: FontStyle.italic,
+            if (settings.showExample) ...[
+              const SizedBox(height: 32),
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.amber.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  word.example,
+                  style: const TextStyle(fontSize: 16),
+                  textAlign: TextAlign.center,
+                ),
               ),
-            ),
-            const SizedBox(height: 32),
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.amber.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Text(
-                word.example,
-                style: const TextStyle(fontSize: 16),
-                textAlign: TextAlign.center,
-              ),
-            ),
+            ],
             const Spacer(),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -242,7 +258,7 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
                 Icon(Icons.touch_app, color: Colors.grey[400], size: 20),
                 const SizedBox(width: 8),
                 Text(
-                  'Tap to see meaning',
+                  AppStrings.get('tap_to_see_meaning', settings.language),
                   style: TextStyle(color: Colors.grey[400]),
                 ),
               ],
@@ -254,6 +270,8 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
   }
 
   Widget _buildBackCard(Word word, Translation? translation, String language) {
+    final settings = context.watch<SettingsProvider>();
+
     return Card(
       key: const ValueKey('back'),
       elevation: 8,
@@ -282,7 +300,7 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
               ),
               textAlign: TextAlign.center,
             ),
-            if (language != 'en') ...[
+            if (language != 'en' && settings.showEnglishDefinition) ...[
               const SizedBox(height: 16),
               Text(
                 word.definition,
@@ -293,39 +311,40 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
                 textAlign: TextAlign.center,
               ),
             ],
-            const SizedBox(height: 32),
-            // 스페인어 예문 + 번역
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.5),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Column(
-                children: [
-                  Text(
-                    word.example,
-                    style: const TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  if (translation?.example.isNotEmpty == true) ...[
-                    const SizedBox(height: 8),
+            if (settings.showExample) ...[
+              const SizedBox(height: 32),
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.5),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Column(
+                  children: [
                     Text(
-                      translation!.example,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey[600],
-                        fontStyle: FontStyle.italic,
+                      word.example,
+                      style: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500,
                       ),
                       textAlign: TextAlign.center,
                     ),
+                    if (translation?.example.isNotEmpty == true) ...[
+                      const SizedBox(height: 8),
+                      Text(
+                        translation!.example,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey[600],
+                          fontStyle: FontStyle.italic,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
                   ],
-                ],
+                ),
               ),
-            ),
+            ],
             const Spacer(),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -333,7 +352,7 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
                 Icon(Icons.touch_app, color: Colors.grey[400], size: 20),
                 const SizedBox(width: 8),
                 Text(
-                  'Tap to flip back',
+                  AppStrings.get('tap_to_flip_back', settings.language),
                   style: TextStyle(color: Colors.grey[400]),
                 ),
               ],
