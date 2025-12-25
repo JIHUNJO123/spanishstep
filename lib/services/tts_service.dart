@@ -17,11 +17,9 @@ class TtsService {
 
     _flutterTts = FlutterTts();
 
-    // Android specific settings for better volume
-    if (!kIsWeb && Platform.isAndroid) {
-      // Use STREAM_MUSIC for louder volume (follows media volume)
+    // iOS specific settings
+    if (!kIsWeb && Platform.isIOS) {
       await _flutterTts!.setSharedInstance(true);
-      // Set audio focus mode
       await _flutterTts!.setIosAudioCategory(
         IosTextToSpeechAudioCategory.playback,
         [
@@ -30,6 +28,11 @@ class TtsService {
         ],
         IosTextToSpeechAudioMode.defaultMode,
       );
+    }
+
+    // Android specific settings for better volume
+    if (!kIsWeb && Platform.isAndroid) {
+      await _flutterTts!.setSharedInstance(true);
     }
 
     // Set Spanish language
