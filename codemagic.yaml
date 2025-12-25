@@ -14,21 +14,19 @@ workflows:
       flutter: stable
       xcode: latest
       cocoapods: default
-      groups:
-        - google_credentials
     scripts:
-      - name: Change to app directory and get packages
+      - name: Set up code signing settings on Xcode project
+        script: |
+          cd $CM_BUILD_DIR/app
+          xcode-project use-profiles
+      - name: Get Flutter packages
         script: |
           cd $CM_BUILD_DIR/app
           flutter packages pub get
-      - name: Set up code signing settings on Xcode project
-        script: |
-          cd $CM_BUILD_DIR/app/ios
-          xcode-project use-profiles
       - name: Install pods
         script: |
-          cd $CM_BUILD_DIR/app/ios
-          pod install
+          cd $CM_BUILD_DIR/app
+          find . -name "Podfile" -execdir pod install \;
       - name: Flutter build ipa
         script: |
           cd $CM_BUILD_DIR/app
