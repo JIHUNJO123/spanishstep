@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class AppTheme {
   static const Color primaryColor = Color(0xFF667EEA);
   static const Color secondaryColor = Color(0xFF764BA2);
-  
+
   static const Color a1Color = Color(0xFF4CAF50);
   static const Color a2Color = Color(0xFF8BC34A);
   static const Color b1Color = Color(0xFFFF9800);
@@ -23,7 +23,7 @@ class AppTheme {
       backgroundColor: Colors.transparent,
       foregroundColor: Colors.black87,
     ),
-    cardTheme: CardTheme(
+    cardTheme: CardThemeData(
       elevation: 2,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
@@ -55,7 +55,7 @@ class AppTheme {
       backgroundColor: Colors.transparent,
       foregroundColor: Colors.white,
     ),
-    cardTheme: CardTheme(
+    cardTheme: CardThemeData(
       elevation: 2,
       color: const Color(0xFF1E1E1E),
       shape: RoundedRectangleBorder(

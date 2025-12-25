@@ -79,7 +79,7 @@ class SettingsScreen extends StatelessWidget {
                     ListTile(
                       leading: const Icon(Icons.restore),
                       title: const Text('Restore Purchase'),
-                      onChanged: (value) {
+                      onTap: () {
                         // TODO: Implement restore
                       },
                     ),
@@ -129,7 +129,8 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSection({required String title, required List<Widget> children}) {
+  Widget _buildSection(
+      {required String title, required List<Widget> children}) {
     return Card(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

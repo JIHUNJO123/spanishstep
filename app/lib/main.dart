@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:provider/provider.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'providers/progress_provider.dart';
@@ -8,8 +9,12 @@ import 'config/theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await MobileAds.instance.initialize();
-  
+
+  // Skip AdMob initialization on web
+  if (!kIsWeb) {
+    await MobileAds.instance.initialize();
+  }
+
   runApp(
     MultiProvider(
       providers: [

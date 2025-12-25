@@ -29,7 +29,7 @@ dependencies:
   flutter_svg: ^2.0.9
   
   # Utils
-  intl: ^0.18.1
+  intl: ^0.20.2
 
 dev_dependencies:
   flutter_test:
@@ -41,10 +41,4 @@ flutter:
   
   assets:
     - assets/data/
-  
-  fonts:
-    - family: Pretendard
-      fonts:
-        - asset: assets/fonts/Pretendard-Regular.otf
-        - asset: assets/fonts/Pretendard-Bold.otf
-          weight: 700
+    - assets/icon/

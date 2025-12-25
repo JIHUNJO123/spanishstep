@@ -6,25 +6,86 @@ class WordCard extends StatelessWidget {
   final Word word;
   final String language;
   final bool isLocked;
-  final VoidCallback? onViewed;
+  final VoidCallback? onTap;
 
   const WordCard({
     super.key,
     required this.word,
     required this.language,
     this.isLocked = false,
-    this.onViewed,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    // Call onViewed when card is built (visible)
-    if (!isLocked && onViewed != null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) => onViewed!());
+    final levelColor = AppTheme.getLevelColor(word.level);
+
+    // 잠긴 카드는 내용을 숨김
+    if (isLocked) {
+      return _buildLockedCard(context, levelColor);
     }
 
+    return _buildUnlockedCard(context, levelColor);
+  }
+
+  Widget _buildLockedCard(BuildContext context, Color levelColor) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Card(
+        child: Container(
+          height: 200,
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.grey.withOpacity(0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.lock,
+                  size: 40,
+                  color: Colors.grey,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                '#${word.id}',
+                style: TextStyle(
+                  color: levelColor,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
+              const SizedBox(height: 8),
+              const Text(
+                'Watch ad to unlock',
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 14,
+                ),
+              ),
+              const SizedBox(height: 4),
+              const Text(
+                'Tap here',
+                style: TextStyle(
+                  color: Colors.blue,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildUnlockedCard(BuildContext context, Color levelColor) {
+    // 선택된 언어의 번역 가져오기
     final translation = word.translations[language];
-    final levelColor = AppTheme.getLevelColor(word.level);
 
     return Card(
       child: Padding(
@@ -32,7 +93,7 @@ class WordCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header: Word + Level badge
+            // Header: Word + ID badge
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -43,7 +104,7 @@ class WordCard extends StatelessWidget {
                       Text(
                         word.word,
                         style: const TextStyle(
-                          fontSize: 24,
+                          fontSize: 26,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -60,7 +121,8 @@ class WordCard extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                   decoration: BoxDecoration(
                     color: levelColor.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(8),
@@ -76,112 +138,122 @@ class WordCard extends StatelessWidget {
                 ),
               ],
             ),
-            
+
             const SizedBox(height: 16),
-            
-            // Definition (English)
+
+            // 번역 (선택된 언어)
             Container(
-              padding: const EdgeInsets.all(12),
+              width: double.infinity,
+              padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
                 color: AppTheme.primaryColor.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(10),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
-                      const Text('🇬🇧', style: TextStyle(fontSize: 16)),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Text(
-                          word.definition,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ),
-                    ],
+                  Text(
+                    _getLanguageLabel(language),
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: Colors.grey[600],
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    translation?.definition ?? word.definition,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 17,
+                    ),
                   ),
                 ],
               ),
             ),
-            
-            const SizedBox(height: 12),
-            
-            // Translation (User's language)
-            if (translation != null)
+
+            // 영어 정의 (선택 언어가 영어가 아닐 때만)
+            if (language != 'en') ...[
+              const SizedBox(height: 10),
               Container(
+                width: double.infinity,
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.green.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(8),
+                  color: Colors.grey.withOpacity(0.08),
+                  borderRadius: BorderRadius.circular(10),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        Text(_getFlag(language), style: const TextStyle(fontSize: 16)),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            translation.definition,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ),
-                      ],
+                    Text(
+                      'English',
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: Colors.grey[600],
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      word.definition,
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: Colors.grey[700],
+                      ),
                     ),
                   ],
                 ),
               ),
-            
-            const SizedBox(height: 16),
-            
-            // Example sentence
+            ],
+
+            const SizedBox(height: 14),
+
+            // 예문
             Container(
-              padding: const EdgeInsets.all(12),
+              width: double.infinity,
+              padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
-                color: Colors.grey.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.grey.withOpacity(0.2)),
+                color: Colors.amber.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: Colors.amber.withOpacity(0.3)),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
-                      const Icon(Icons.format_quote, size: 16, color: Colors.grey),
+                      Icon(Icons.format_quote,
+                          size: 14, color: Colors.amber[700]),
                       const SizedBox(width: 4),
                       Text(
                         'Example',
                         style: TextStyle(
-                          color: Colors.grey[600],
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
+                          color: Colors.amber[800],
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ],
                   ),
                   const SizedBox(height: 8),
+                  // 스페인어 예문
                   Text(
                     word.example,
                     style: const TextStyle(
                       fontSize: 15,
-                      fontStyle: FontStyle.italic,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
-                  if (translation != null) ...[
+                  // 번역된 예문
+                  if (translation != null &&
+                      translation.example.isNotEmpty) ...[
                     const SizedBox(height: 8),
                     Text(
                       translation.example,
                       style: TextStyle(
                         fontSize: 14,
                         color: Colors.grey[600],
+                        fontStyle: FontStyle.italic,
                       ),
                     ),
                   ],
@@ -194,21 +266,21 @@ class WordCard extends StatelessWidget {
     );
   }
 
-  String _getFlag(String lang) {
+  String _getLanguageLabel(String lang) {
     switch (lang) {
       case 'ko':
-        return '🇰🇷';
+        return '한국어';
       case 'ja':
-        return '🇯🇵';
+        return '日本語';
       case 'zh':
-        return '🇨🇳';
+        return '中文';
       case 'pt':
-        return '🇧🇷';
+        return 'Português';
       case 'fr':
-        return '🇫🇷';
+        return 'Français';
       case 'en':
       default:
-        return '🇬🇧';
+        return 'English';
     }
   }
 }

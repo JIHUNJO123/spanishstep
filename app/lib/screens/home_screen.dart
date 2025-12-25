@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/progress_provider.dart';
-import '../providers/settings_provider.dart';
 import '../services/word_service.dart';
 import '../config/theme.dart';
 import 'word_list_screen.dart';
+import 'flashcard_screen.dart';
+import 'quiz_screen.dart';
 import 'settings_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -33,9 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     if (_isLoading) {
       return const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
+        body: Center(child: CircularProgressIndicator()),
       );
     }
 
@@ -46,7 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
             SliverAppBar(
               floating: true,
               title: const Text(
-                '🇪🇸 Spanish Step',
+                'Spanish Step',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               actions: [
@@ -63,9 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             SliverPadding(
               padding: const EdgeInsets.all(16),
-              sliver: SliverToBoxAdapter(
-                child: _buildProgressCard(),
-              ),
+              sliver: SliverToBoxAdapter(child: _buildProgressCard()),
             ),
             SliverPadding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -73,34 +70,26 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Text(
                   'DELE Levels',
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
             SliverPadding(
               padding: const EdgeInsets.all(16),
-              sliver: SliverGrid(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 12,
-                  mainAxisSpacing: 12,
-                  childAspectRatio: 1.2,
-                ),
+              sliver: SliverList(
                 delegate: SliverChildListDelegate([
-                  _buildLevelCard('A1', 600, AppTheme.a1Color),
-                  _buildLevelCard('A2', 600, AppTheme.a2Color),
-                  _buildLevelCard('B1', 1300, AppTheme.b1Color),
-                  _buildLevelCard('B2', 2500, AppTheme.b2Color),
+                  _buildLevelSection('A1', 600, AppTheme.a1Color, 'Beginner'),
+                  const SizedBox(height: 16),
+                  _buildLevelSection('A2', 600, AppTheme.a2Color, 'Elementary'),
+                  const SizedBox(height: 16),
+                  _buildLevelSection('B1', 1300, AppTheme.b1Color, 'Intermediate'),
+                  const SizedBox(height: 16),
+                  _buildLevelSection('B2', 2500, AppTheme.b2Color, 'Upper-Intermediate'),
                 ]),
               ),
             ),
-            SliverPadding(
-              padding: const EdgeInsets.all(16),
-              sliver: SliverToBoxAdapter(
-                child: _buildStatsCard(),
-              ),
-            ),
+            const SliverPadding(padding: EdgeInsets.only(bottom: 32)),
           ],
         ),
       ),
@@ -110,8 +99,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildProgressCard() {
     return Consumer<ProgressProvider>(
       builder: (context, progress, _) {
-        final dailyProgress = (progress.currentWordId % 30).toDouble();
-        
         return Card(
           child: Padding(
             padding: const EdgeInsets.all(20),
@@ -123,166 +110,170 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     const Text(
                       "Today's Progress",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     if (progress.hasUnlimitedAccess)
                       Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 4,
-                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                         decoration: BoxDecoration(
                           color: Colors.green,
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: const Text(
-                          '🔓 Unlimited',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                          ),
+                        child: const Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.all_inclusive, color: Colors.white, size: 14),
+                            SizedBox(width: 4),
+                            Text(
+                              'Unlimited',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                   ],
                 ),
                 const SizedBox(height: 16),
                 LinearProgressIndicator(
-                  value: dailyProgress / 30,
+                  value: progress.viewedCountToday / ProgressProvider.dailyLimit,
                   backgroundColor: Colors.grey[200],
-                  valueColor: AlwaysStoppedAnimation(AppTheme.primaryColor),
+                  valueColor: AlwaysStoppedAnimation(
+                    progress.hasReachedLimit && !progress.hasUnlimitedAccess
+                        ? Colors.red
+                        : AppTheme.primaryColor,
+                  ),
                   minHeight: 8,
                   borderRadius: BorderRadius.circular(4),
                 ),
                 const SizedBox(height: 8),
-                Text(
-                  '${dailyProgress.toInt()}/30 words today',
-                  style: TextStyle(
-                    color: Colors.grey[600],
-                    fontSize: 14,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'Current position: Word #${progress.currentWordId}',
-                  style: TextStyle(
-                    color: Colors.grey[500],
-                    fontSize: 12,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildLevelCard(String level, int wordCount, Color color) {
-    return InkWell(
-      onTap: () {
-        context.read<ProgressProvider>().setSelectedLevel(level);
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => WordListScreen(level: level),
-          ),
-        );
-      },
-      child: Card(
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                color,
-                color.withOpacity(0.7),
-              ],
-            ),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  level,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      '$wordCount words',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
+                      '${progress.viewedCountToday}/${ProgressProvider.dailyLimit} words viewed',
+                      style: TextStyle(color: Colors.grey[600], fontSize: 14),
                     ),
-                    Text(
-                      _getLevelDescription(level),
-                      style: TextStyle(
-                        color: Colors.white.withOpacity(0.8),
-                        fontSize: 12,
+                    if (!progress.hasUnlimitedAccess && progress.hasReachedLimit)
+                      const Text(
+                        'Limit reached',
+                        style: TextStyle(
+                          color: Colors.red,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
                   ],
                 ),
               ],
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
-  String _getLevelDescription(String level) {
-    switch (level) {
-      case 'A1':
-        return 'Beginner';
-      case 'A2':
-        return 'Elementary';
-      case 'B1':
-        return 'Intermediate';
-      case 'B2':
-        return 'Upper-Intermediate';
-      default:
-        return '';
-    }
-  }
-
-  Widget _buildStatsCard() {
+  Widget _buildLevelSection(String level, int wordCount, Color color, String subtitle) {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              '📊 Statistics',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: color,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    level,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        subtitle,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                      Text(
+                        '$wordCount words',
+                        style: TextStyle(
+                          color: Colors.grey[600],
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 16),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _buildStatItem('5,000', 'Total Words'),
-                _buildStatItem('4', 'DELE Levels'),
-                _buildStatItem('6', 'Languages'),
+                Expanded(
+                  child: _buildModeButton(
+                    icon: Icons.list_alt,
+                    label: 'Words',
+                    color: color,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => WordListScreen(level: level),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: _buildModeButton(
+                    icon: Icons.style,
+                    label: 'Flashcards',
+                    color: color,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => FlashcardScreen(level: level),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: _buildModeButton(
+                    icon: Icons.quiz,
+                    label: 'Quiz',
+                    color: color,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => QuizScreen(level: level),
+                        ),
+                      );
+                    },
+                  ),
+                ),
               ],
             ),
           ],
@@ -291,26 +282,37 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildStatItem(String value, String label) {
-    return Column(
-      children: [
-        Text(
-          value,
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: AppTheme.primaryColor,
-          ),
+  Widget _buildModeButton({
+    required IconData icon,
+    required String label,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        decoration: BoxDecoration(
+          color: color.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: color.withOpacity(0.3)),
         ),
-        const SizedBox(height: 4),
-        Text(
-          label,
-          style: TextStyle(
-            color: Colors.grey[600],
-            fontSize: 12,
-          ),
+        child: Column(
+          children: [
+            Icon(icon, color: color, size: 24),
+            const SizedBox(height: 4),
+            Text(
+              label,
+              style: TextStyle(
+                color: color,
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }
