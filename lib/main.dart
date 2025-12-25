@@ -15,9 +15,21 @@ void main() async {
 
   // Skip AdMob initialization on web
   if (!kIsWeb) {
-    await MobileAds.instance.initialize();
-    await TtsService().init();
-    await PurchaseService.instance.initialize();
+    try {
+      await MobileAds.instance.initialize();
+    } catch (e) {
+      debugPrint('AdMob init error: $e');
+    }
+    try {
+      await TtsService().init();
+    } catch (e) {
+      debugPrint('TTS init error: $e');
+    }
+    try {
+      await PurchaseService.instance.initialize();
+    } catch (e) {
+      debugPrint('IAP init error: $e');
+    }
   }
 
   runApp(
