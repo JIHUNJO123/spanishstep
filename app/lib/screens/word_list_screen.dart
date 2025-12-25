@@ -343,17 +343,22 @@ class _WordListScreenState extends State<WordListScreen> {
 
               return Padding(
                 padding: const EdgeInsets.only(bottom: 12),
-                child: WordCard(
-                  word: word,
-                  language: settings.language,
-                  isLocked: isLocked,
-                  onTap: isLocked
-                      ? () => _showUnlockDialog()
-                      : () {
-                          // 단어 조회 기록
-                          progress.markWordViewed(word.id, widget.level);
-                          progress.updateLevelProgress(widget.level, index);
-                        },
+                child: Builder(
+                  builder: (context) {
+                    // 잠기지 않은 카드가 화면에 보이면 자동으로 조회 카운트
+                    if (!isLocked) {
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        progress.markWordViewed(word.id, widget.level);
+                        progress.updateLevelProgress(widget.level, index);
+                      });
+                    }
+                    return WordCard(
+                      word: word,
+                      language: settings.language,
+                      isLocked: isLocked,
+                      onTap: isLocked ? () => _showUnlockDialog() : null,
+                    );
+                  },
                 ),
               );
             },
