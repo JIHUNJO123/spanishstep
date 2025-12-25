@@ -5,6 +5,7 @@ import '../providers/progress_provider.dart';
 import '../providers/settings_provider.dart';
 import '../services/word_service.dart';
 import '../services/ad_service.dart';
+import '../services/purchase_service.dart';
 import '../config/theme.dart';
 import '../widgets/word_card.dart';
 
@@ -160,9 +161,7 @@ class _WordListScreenState extends State<WordListScreen> {
                   child: OutlinedButton.icon(
                     onPressed: () {
                       Navigator.pop(ctx);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Coming soon!')),
-                      );
+                      _handlePurchase();
                     },
                     icon: const Icon(Icons.star_outline),
                     label: const Text('Remove Ads Forever'),
@@ -214,6 +213,28 @@ class _WordListScreenState extends State<WordListScreen> {
           ),
         );
       }
+    }
+  }
+
+  Future<void> _handlePurchase() async {
+    final purchaseService = PurchaseService.instance;
+    
+    if (!purchaseService.isAvailable) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('In-app purchases not available')),
+        );
+      }
+      return;
+    }
+
+    // 구매 시작
+    final success = await purchaseService.buyRemoveAds();
+    
+    if (!success && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(purchaseService.errorMessage ?? 'Purchase failed')),
+      );
     }
   }
 

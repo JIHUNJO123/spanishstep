@@ -1,3 +1,4 @@
+import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
@@ -9,22 +10,10 @@ class AdService {
   RewardedAd? _rewardedAd;
   bool _isLoading = false;
 
-  // AdMob IDs
-  static String get rewardedAdUnitId {
-    if (kIsWeb) return '';
-
-    // Check platform using conditional imports would be better,
-    // but for simplicity we'll use this approach
-    const isAndroid =
-        bool.fromEnvironment('dart.library.io') == false ? false : true;
-
-    // Android
-    return 'ca-app-pub-5837885590326347/2170377421';
-  }
-
-  static String get rewardedAdUnitIdIOS =>
+  // AdMob IDs - Production
+  static const String rewardedAdUnitIdIOS =
       'ca-app-pub-5837885590326347/5713859000';
-  static String get rewardedAdUnitIdAndroid =>
+  static const String rewardedAdUnitIdAndroid =
       'ca-app-pub-5837885590326347/2170377421';
 
   // Test IDs for development
@@ -45,10 +34,10 @@ class AdService {
   }
 
   void _loadAd() {
-    // Use test ad ID for development/testing
-    const bool isTestMode = false; // Set to false for production
-    final String adUnitId =
-        isTestMode ? testRewardedAdUnitIdAndroid : rewardedAdUnitIdAndroid;
+    // 플랫폼별 광고 ID 선택
+    final String adUnitId = Platform.isIOS 
+        ? rewardedAdUnitIdIOS 
+        : rewardedAdUnitIdAndroid;
 
     RewardedAd.load(
       adUnitId: adUnitId,
