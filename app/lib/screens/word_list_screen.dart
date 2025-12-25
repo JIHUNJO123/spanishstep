@@ -269,6 +269,7 @@ class _WordListScreenState extends State<WordListScreen> {
         actions: [
           Consumer<ProgressProvider>(
             builder: (context, progress, _) {
+              // 무제한 액세스일 때만 표시
               if (progress.hasUnlimitedAccess) {
                 return Container(
                   margin: const EdgeInsets.only(right: 16),
@@ -295,34 +296,7 @@ class _WordListScreenState extends State<WordListScreen> {
                   ),
                 );
               }
-              // 무료 30개 표시
-              return Container(
-                margin: const EdgeInsets.only(right: 16),
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: Colors.orange.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Icons.lock_open,
-                      color: Colors.orange[700],
-                      size: 16,
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      'Free: ${ProgressProvider.dailyLimit}',
-                      style: TextStyle(
-                        color: Colors.orange[700],
-                        fontWeight: FontWeight.bold,
-                        fontSize: 12,
-                      ),
-                    ),
-                  ],
-                ),
-              );
+              return const SizedBox.shrink();
             },
           ),
         ],
