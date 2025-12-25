@@ -134,7 +134,8 @@ class SettingsScreen extends StatelessWidget {
                     ListTile(
                       leading: const Icon(Icons.restore),
                       title: Text(AppStrings.get('restore_purchase', lang)),
-                      subtitle: Text(AppStrings.get('restore_purchase_hint', lang)),
+                      subtitle:
+                          Text(AppStrings.get('restore_purchase_hint', lang)),
                       onTap: () async {
                         await PurchaseService.instance.restorePurchases();
                         if (context.mounted) {

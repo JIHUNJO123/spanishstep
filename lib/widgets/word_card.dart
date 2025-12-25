@@ -250,9 +250,8 @@ class WordCard extends StatelessWidget {
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                      // 번역된 예문 (영어가 아닐 때만 표시)
-                      if (language != 'en' &&
-                          translation != null &&
+                      // 번역된 예문 표시
+                      if (translation != null &&
                           translation.example.isNotEmpty) ...[
                         const SizedBox(height: 8),
                         Text(

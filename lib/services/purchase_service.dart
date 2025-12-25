@@ -107,6 +107,8 @@ class PurchaseService {
     _adsRemoved = true;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('ads_removed', true);
+    // ProgressProvider와 동기화
+    await prefs.setBool('isPremium', true);
     debugPrint('Ads removed successfully!');
   }
 

@@ -23,7 +23,8 @@ class AppStrings {
       'purchased_unlimited': 'Purchased - Unlimited access',
       'unlock_unlimited': 'Unlock unlimited access for \$1.99',
       'restore_purchase': 'Restore Purchase',
-      'restore_purchase_hint': 'If you purchased on another device, restore here',
+      'restore_purchase_hint':
+          'If you purchased on another device, restore here',
       'restore_complete': 'Purchase restored',
       'about': 'About',
       'privacy_policy': 'Privacy Policy',
@@ -384,7 +385,8 @@ class AppStrings {
       'purchased_unlimited': 'Comprado - Acesso ilimitado',
       'unlock_unlimited': 'Desbloqueie acesso ilimitado por \$1.99',
       'restore_purchase': 'Restaurar Compra',
-      'restore_purchase_hint': 'Si compraste en otro dispositivo, restaura aquí',
+      'restore_purchase_hint':
+          'Si compraste en otro dispositivo, restaura aquí',
       'restore_complete': 'Compra restaurada',
       'about': 'Sobre',
       'privacy_policy': 'Política de Privacidade',
@@ -475,7 +477,8 @@ class AppStrings {
       'purchased_unlimited': 'Acheté - Accès illimité',
       'unlock_unlimited': 'Débloquer l\'accès illimité pour \$1.99',
       'restore_purchase': 'Restaurer l\'Achat',
-      'restore_purchase_hint': 'Si vous avez acheté sur un autre appareil, restaurez ici',
+      'restore_purchase_hint':
+          'Si vous avez acheté sur un autre appareil, restaurez ici',
       'restore_complete': 'Achat restauré',
       'about': 'À Propos',
       'privacy_policy': 'Politique de Confidentialité',

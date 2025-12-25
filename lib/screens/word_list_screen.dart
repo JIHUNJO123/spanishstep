@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:provider/provider.dart';
 import '../models/word.dart';
 import '../providers/progress_provider.dart';
@@ -83,8 +82,6 @@ class _WordListScreenState extends State<WordListScreen> {
   }
 
   void _showUnlockDialog() {
-    final progress = context.read<ProgressProvider>();
-
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
@@ -122,30 +119,10 @@ class _WordListScreenState extends State<WordListScreen> {
                 ),
                 const SizedBox(height: 24),
                 const Text(
-                  'Daily Limit Reached',
+                  'Unlock More Words',
                   style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  'You\'ve viewed ${progress.viewedCountToday} of ${ProgressProvider.dailyLimit} free words today.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 15,
-                    color: Colors.grey[600],
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  kIsWeb
-                      ? 'Tap below to unlock (test mode on web)'
-                      : 'Watch an ad to unlock unlimited access until midnight!',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey[500],
                   ),
                 ),
                 const SizedBox(height: 32),
@@ -166,7 +143,7 @@ class _WordListScreenState extends State<WordListScreen> {
                         : const Icon(Icons.play_circle_outline),
                     label: Text(_isAdLoading
                         ? 'Loading...'
-                        : 'Watch Ad to Unlock (Resets at midnight)'),
+                        : 'Watch Ad to Unlock'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppTheme.primaryColor,
                       foregroundColor: Colors.white,
@@ -188,7 +165,7 @@ class _WordListScreenState extends State<WordListScreen> {
                       );
                     },
                     icon: const Icon(Icons.star_outline),
-                    label: const Text('Remove Ads Forever - \$1.99'),
+                    label: const Text('Remove Ads Forever'),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: AppTheme.primaryColor,
                       padding: const EdgeInsets.symmetric(vertical: 16),
@@ -356,17 +333,12 @@ class _WordListScreenState extends State<WordListScreen> {
             return const Center(child: CircularProgressIndicator());
           }
 
-          // 마지막으로 본 위치 가져오기
-          final lastIndex = progress.getLevelProgress(widget.level);
-          // 무료 범위: 마지막 위치 기준 앞뒤로 15개씩 (총 30개)
-          final halfRange = ProgressProvider.dailyLimit ~/ 2; // 15
-          final lowerBound =
-              (lastIndex - halfRange).clamp(0, _words.length - 1);
-          // 처음엔 30개 무료: lastIndex + (30 - 이미 앞에서 사용한 개수)
-          final usedBefore = lastIndex - lowerBound;
-          final upperBound =
-              (lastIndex + (ProgressProvider.dailyLimit - 1 - usedBefore))
-                  .clamp(0, _words.length - 1);
+          // 무료 범위 시작점 가져오기 (고정된 값, 스크롤해도 안 바뀜)
+          final freeRangeStart = progress.getFreeRangeStart(widget.level);
+          // 무료 범위: freeRangeStart부터 30개
+          final lowerBound = freeRangeStart;
+          final upperBound = (freeRangeStart + ProgressProvider.dailyLimit - 1)
+              .clamp(0, _words.length - 1);
 
           return ListView.builder(
             controller: _scrollController,

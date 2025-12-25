@@ -9,6 +9,7 @@ class ProgressProvider extends ChangeNotifier {
   static const String _keyIsPremium = 'isPremium';
   static const String _keyLevelProgress = 'levelProgress';
   static const String _keyScrollPositions = 'scrollPositions';
+  static const String _keyFreeRangeStart = 'freeRangeStart';
 
   static const int dailyLimit = 30;
 
@@ -19,8 +20,11 @@ class ProgressProvider extends ChangeNotifier {
   bool _isPremium = false;
   bool _isLoaded = false;
 
-  // 레벨별 진행도 (각 레벨에서 마지막으로 본 인덱스)
+  // 레벨별 진행도 (각 레벨에서 마지막으로 본 인덱스 - 스크롤 복원용)
   Map<String, int> _levelProgress = {'A1': 0, 'A2': 0, 'B1': 0, 'B2': 0};
+
+  // 레벨별 무료 범위 시작점 (고정, 광고 시청/새 날에만 업데이트)
+  Map<String, int> _freeRangeStart = {'A1': 0, 'A2': 0, 'B1': 0, 'B2': 0};
 
   // 레벨별 스크롤 위치
   Map<String, double> _scrollPositions = {
@@ -78,6 +82,13 @@ class ProgressProvider extends ChangeNotifier {
       _levelProgress = map.map((k, v) => MapEntry(k, v as int));
     }
 
+    // 무료 범위 시작점 로드
+    final freeRangeJson = prefs.getString(_keyFreeRangeStart);
+    if (freeRangeJson != null) {
+      final Map<String, dynamic> map = jsonDecode(freeRangeJson);
+      _freeRangeStart = map.map((k, v) => MapEntry(k, v as int));
+    }
+
     // 스크롤 위치 로드
     final scrollJson = prefs.getString(_keyScrollPositions);
     if (scrollJson != null) {
@@ -102,6 +113,11 @@ class ProgressProvider extends ChangeNotifier {
         // 새 날 - 오늘 본 단어 초기화, 광고 잠금 해제 만료
         _viewedWordsToday.clear();
         _adUnlockExpiry = null;
+        
+        // 전날 마지막 스크롤 위치를 오늘의 무료 범위 시작점으로 설정
+        for (final level in _levelProgress.keys) {
+          _freeRangeStart[level] = _levelProgress[level] ?? 0;
+        }
       }
     }
     _lastStudyDate = now;
@@ -126,7 +142,7 @@ class ProgressProvider extends ChangeNotifier {
     }
   }
 
-  // 레벨 진행도 업데이트
+  // 레벨 진행도 업데이트 (스크롤 복원용, 무료 범위와 별개)
   Future<void> updateLevelProgress(String level, int index) async {
     if (index > (_levelProgress[level] ?? 0)) {
       _levelProgress[level] = index;
@@ -136,6 +152,16 @@ class ProgressProvider extends ChangeNotifier {
   }
 
   int getLevelProgress(String level) => _levelProgress[level] ?? 0;
+
+  // 무료 범위 시작점 가져오기 (락 시스템용)
+  int getFreeRangeStart(String level) => _freeRangeStart[level] ?? 0;
+
+  // 무료 범위 시작점 업데이트 (광고 시청 후 현재 위치로 업데이트)
+  Future<void> updateFreeRangeStart(String level, int index) async {
+    _freeRangeStart[level] = index;
+    await _saveProgress();
+    notifyListeners();
+  }
 
   // 스크롤 위치 저장
   Future<void> saveScrollPosition(String level, double offset) async {
@@ -167,6 +193,7 @@ class ProgressProvider extends ChangeNotifier {
     await prefs.setString(
         _keyViewedWordsToday, jsonEncode(_viewedWordsToday.toList()));
     await prefs.setString(_keyLevelProgress, jsonEncode(_levelProgress));
+    await prefs.setString(_keyFreeRangeStart, jsonEncode(_freeRangeStart));
     await prefs.setString(_keyScrollPositions, jsonEncode(_scrollPositions));
 
     if (_lastStudyDate != null) {
