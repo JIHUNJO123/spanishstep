@@ -90,23 +90,10 @@ class SettingsScreen extends StatelessWidget {
                 title: 'About',
                 children: [
                   ListTile(
-                    leading: const Icon(Icons.info_outline),
-                    title: const Text('Version'),
-                    subtitle: const Text('1.0.0'),
-                  ),
-                  ListTile(
                     leading: const Icon(Icons.privacy_tip_outlined),
                     title: const Text('Privacy Policy'),
                     onTap: () {
                       // TODO: Open privacy policy URL
-                    },
-                  ),
-                  ListTile(
-                    leading: const Icon(Icons.help_outline),
-                    title: const Text('Support'),
-                    subtitle: const Text('jihun.jo@yahoo.com'),
-                    onTap: () {
-                      // TODO: Open support URL or email
                     },
                   ),
                 ],

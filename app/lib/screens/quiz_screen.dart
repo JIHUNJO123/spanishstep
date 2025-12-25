@@ -17,7 +17,7 @@ class QuizScreen extends StatefulWidget {
 
 class _QuizScreenState extends State<QuizScreen> {
   final WordService _wordService = WordService();
-  
+
   List<Word> _allWords = [];
   List<QuizQuestion> _questions = [];
   bool _isLoading = true;
@@ -45,24 +45,22 @@ class _QuizScreenState extends State<QuizScreen> {
     final random = Random();
     final shuffled = List<Word>.from(_allWords)..shuffle(random);
     final questionWords = shuffled.take(10).toList();
-    
+
     _questions = questionWords.map((word) {
       // 4개의 선택지 생성 (정답 1개 + 오답 3개)
-      final wrongAnswers = _allWords
-          .where((w) => w.id != word.id)
-          .toList()
+      final wrongAnswers = _allWords.where((w) => w.id != word.id).toList()
         ..shuffle(random);
-      
+
       final options = [word, ...wrongAnswers.take(3)]..shuffle(random);
       final correctIndex = options.indexOf(word);
-      
+
       return QuizQuestion(
         word: word,
         options: options,
         correctIndex: correctIndex,
       );
     }).toList();
-    
+
     _currentIndex = 0;
     _correctCount = 0;
     _selectedAnswer = null;
@@ -72,7 +70,7 @@ class _QuizScreenState extends State<QuizScreen> {
 
   void _selectAnswer(int index) {
     if (_showResult) return;
-    
+
     setState(() {
       _selectedAnswer = index;
       _showResult = true;
@@ -125,7 +123,8 @@ class _QuizScreenState extends State<QuizScreen> {
               ),
               child: Text(
                 widget.level,
-                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                    color: Colors.white, fontWeight: FontWeight.bold),
               ),
             ),
             const SizedBox(width: 8),
@@ -154,7 +153,7 @@ class _QuizScreenState extends State<QuizScreen> {
         builder: (context, settings, _) {
           final question = _questions[_currentIndex];
           final translation = question.word.translations[settings.language];
-          
+
           return Column(
             children: [
               // Progress
@@ -174,13 +173,14 @@ class _QuizScreenState extends State<QuizScreen> {
                       child: LinearProgressIndicator(
                         value: (_currentIndex + 1) / _questions.length,
                         backgroundColor: Colors.grey[300],
-                        valueColor: AlwaysStoppedAnimation(AppTheme.getLevelColor(widget.level)),
+                        valueColor: AlwaysStoppedAnimation(
+                            AppTheme.getLevelColor(widget.level)),
                       ),
                     ),
                   ],
                 ),
               ),
-              
+
               // Question
               Expanded(
                 child: Padding(
@@ -224,20 +224,21 @@ class _QuizScreenState extends State<QuizScreen> {
                         ),
                       ),
                       const SizedBox(height: 32),
-                      
+
                       // Options
                       Expanded(
                         child: ListView.builder(
                           itemCount: question.options.length,
                           itemBuilder: (context, index) {
                             final option = question.options[index];
-                            final optionTranslation = option.translations[settings.language];
+                            final optionTranslation =
+                                option.translations[settings.language];
                             final isSelected = _selectedAnswer == index;
                             final isCorrect = index == question.correctIndex;
-                            
+
                             Color? bgColor;
                             Color? borderColor;
-                            
+
                             if (_showResult) {
                               if (isCorrect) {
                                 bgColor = Colors.green.withOpacity(0.2);
@@ -250,7 +251,7 @@ class _QuizScreenState extends State<QuizScreen> {
                               bgColor = AppTheme.primaryColor.withOpacity(0.1);
                               borderColor = AppTheme.primaryColor;
                             }
-                            
+
                             return Padding(
                               padding: const EdgeInsets.only(bottom: 12),
                               child: InkWell(
@@ -263,8 +264,12 @@ class _QuizScreenState extends State<QuizScreen> {
                                     color: bgColor,
                                     borderRadius: BorderRadius.circular(12),
                                     border: Border.all(
-                                      color: borderColor ?? Colors.grey.withOpacity(0.3),
-                                      width: isSelected || (_showResult && isCorrect) ? 2 : 1,
+                                      color: borderColor ??
+                                          Colors.grey.withOpacity(0.3),
+                                      width: isSelected ||
+                                              (_showResult && isCorrect)
+                                          ? 2
+                                          : 1,
                                     ),
                                   ),
                                   child: Row(
@@ -273,22 +278,32 @@ class _QuizScreenState extends State<QuizScreen> {
                                         width: 32,
                                         height: 32,
                                         decoration: BoxDecoration(
-                                          color: isSelected || (_showResult && isCorrect)
-                                              ? (isCorrect ? Colors.green : Colors.red)
+                                          color: isSelected ||
+                                                  (_showResult && isCorrect)
+                                              ? (isCorrect
+                                                  ? Colors.green
+                                                  : Colors.red)
                                               : Colors.grey.withOpacity(0.2),
                                           shape: BoxShape.circle,
                                         ),
                                         child: Center(
                                           child: _showResult
                                               ? Icon(
-                                                  isCorrect ? Icons.check : (isSelected ? Icons.close : null),
+                                                  isCorrect
+                                                      ? Icons.check
+                                                      : (isSelected
+                                                          ? Icons.close
+                                                          : null),
                                                   color: Colors.white,
                                                   size: 18,
                                                 )
                                               : Text(
-                                                  String.fromCharCode(65 + index),
+                                                  String.fromCharCode(
+                                                      65 + index),
                                                   style: TextStyle(
-                                                    color: isSelected ? Colors.white : Colors.grey[600],
+                                                    color: isSelected
+                                                        ? Colors.white
+                                                        : Colors.grey[600],
                                                     fontWeight: FontWeight.bold,
                                                   ),
                                                 ),
@@ -297,10 +312,12 @@ class _QuizScreenState extends State<QuizScreen> {
                                       const SizedBox(width: 16),
                                       Expanded(
                                         child: Text(
-                                          optionTranslation?.definition ?? option.definition,
+                                          optionTranslation?.definition ??
+                                              option.definition,
                                           style: TextStyle(
                                             fontSize: 16,
-                                            fontWeight: isSelected || (_showResult && isCorrect)
+                                            fontWeight: isSelected ||
+                                                    (_showResult && isCorrect)
                                                 ? FontWeight.bold
                                                 : FontWeight.normal,
                                           ),
@@ -314,7 +331,7 @@ class _QuizScreenState extends State<QuizScreen> {
                           },
                         ),
                       ),
-                      
+
                       // Next button
                       if (_showResult)
                         SizedBox(
@@ -330,7 +347,9 @@ class _QuizScreenState extends State<QuizScreen> {
                               ),
                             ),
                             child: Text(
-                              _currentIndex < _questions.length - 1 ? 'Next Question' : 'See Results',
+                              _currentIndex < _questions.length - 1
+                                  ? 'Next Question'
+                                  : 'See Results',
                             ),
                           ),
                         ),
@@ -348,7 +367,7 @@ class _QuizScreenState extends State<QuizScreen> {
   Widget _buildResultScreen() {
     final percentage = (_correctCount / _questions.length * 100).round();
     final isGood = percentage >= 70;
-    
+
     return Scaffold(
       appBar: AppBar(title: Text('${widget.level} Quiz Results')),
       body: Center(
@@ -360,7 +379,9 @@ class _QuizScreenState extends State<QuizScreen> {
               Container(
                 padding: const EdgeInsets.all(32),
                 decoration: BoxDecoration(
-                  color: isGood ? Colors.green.withOpacity(0.1) : Colors.orange.withOpacity(0.1),
+                  color: isGood
+                      ? Colors.green.withOpacity(0.1)
+                      : Colors.orange.withOpacity(0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(

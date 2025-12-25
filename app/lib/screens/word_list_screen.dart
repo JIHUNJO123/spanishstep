@@ -22,7 +22,7 @@ class _WordListScreenState extends State<WordListScreen> {
   final WordService _wordService = WordService();
   final AdService _adService = AdService();
   final ScrollController _scrollController = ScrollController();
-  
+
   List<Word> _words = [];
   bool _isLoading = true;
   bool _isAdLoading = false;
@@ -32,7 +32,7 @@ class _WordListScreenState extends State<WordListScreen> {
     super.initState();
     _loadWords();
     _adService.loadRewardedAd();
-    
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final progress = context.read<ProgressProvider>();
       final savedOffset = progress.getScrollPosition(widget.level);
@@ -45,10 +45,9 @@ class _WordListScreenState extends State<WordListScreen> {
   }
 
   void _onScroll() {
-    context.read<ProgressProvider>().saveScrollPosition(
-      widget.level, 
-      _scrollController.offset
-    );
+    context
+        .read<ProgressProvider>()
+        .saveScrollPosition(widget.level, _scrollController.offset);
   }
 
   Future<void> _loadWords() async {
@@ -68,7 +67,7 @@ class _WordListScreenState extends State<WordListScreen> {
 
   void _showUnlockDialog() {
     final progress = context.read<ProgressProvider>();
-    
+
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
@@ -123,7 +122,7 @@ class _WordListScreenState extends State<WordListScreen> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  kIsWeb 
+                  kIsWeb
                       ? 'Tap below to unlock (test mode on web)'
                       : 'Watch an ad to unlock unlimited access until midnight!',
                   textAlign: TextAlign.center,
@@ -143,11 +142,13 @@ class _WordListScreenState extends State<WordListScreen> {
                             height: 20,
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                              valueColor:
+                                  AlwaysStoppedAnimation<Color>(Colors.white),
                             ),
                           )
                         : const Icon(Icons.play_circle_outline),
-                    label: Text(_isAdLoading ? 'Loading...' : 'Watch Ad to Unlock'),
+                    label: Text(
+                        _isAdLoading ? 'Loading...' : 'Watch Ad to Unlock'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppTheme.primaryColor,
                       foregroundColor: Colors.white,
@@ -203,15 +204,15 @@ class _WordListScreenState extends State<WordListScreen> {
 
   Future<void> _handleWatchAd(BuildContext dialogContext) async {
     setState(() => _isAdLoading = true);
-    
+
     final success = await _adService.showRewardedAd(
       onRewarded: () {
         context.read<ProgressProvider>().onRewardedAdWatched();
       },
     );
-    
+
     setState(() => _isAdLoading = false);
-    
+
     if (success) {
       if (dialogContext.mounted) Navigator.pop(dialogContext);
       if (mounted) {
@@ -271,7 +272,8 @@ class _WordListScreenState extends State<WordListScreen> {
               if (progress.hasUnlimitedAccess) {
                 return Container(
                   margin: const EdgeInsets.only(right: 16),
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
                     color: Colors.green.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(8),
@@ -297,7 +299,7 @@ class _WordListScreenState extends State<WordListScreen> {
                 margin: const EdgeInsets.only(right: 16),
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: progress.hasReachedLimit 
+                  color: progress.hasReachedLimit
                       ? Colors.red.withOpacity(0.2)
                       : Colors.blue.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(8),
@@ -307,14 +309,16 @@ class _WordListScreenState extends State<WordListScreen> {
                   children: [
                     Icon(
                       progress.hasReachedLimit ? Icons.lock : Icons.visibility,
-                      color: progress.hasReachedLimit ? Colors.red : Colors.blue,
+                      color:
+                          progress.hasReachedLimit ? Colors.red : Colors.blue,
                       size: 16,
                     ),
                     const SizedBox(width: 4),
                     Text(
                       '${progress.viewedCountToday}/${ProgressProvider.dailyLimit}',
                       style: TextStyle(
-                        color: progress.hasReachedLimit ? Colors.red : Colors.blue,
+                        color:
+                            progress.hasReachedLimit ? Colors.red : Colors.blue,
                         fontWeight: FontWeight.bold,
                         fontSize: 12,
                       ),
@@ -343,7 +347,7 @@ class _WordListScreenState extends State<WordListScreen> {
                   word: word,
                   language: settings.language,
                   isLocked: isLocked,
-                  onTap: isLocked 
+                  onTap: isLocked
                       ? () => _showUnlockDialog()
                       : () {
                           // 단어 조회 기록

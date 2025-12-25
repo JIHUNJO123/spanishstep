@@ -6,6 +6,7 @@ import 'providers/progress_provider.dart';
 import 'providers/settings_provider.dart';
 import 'screens/home_screen.dart';
 import 'config/theme.dart';
+import 'services/tts_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -13,6 +14,7 @@ void main() async {
   // Skip AdMob initialization on web
   if (!kIsWeb) {
     await MobileAds.instance.initialize();
+    await TtsService().init();
   }
 
   runApp(

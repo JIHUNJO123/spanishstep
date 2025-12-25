@@ -18,7 +18,7 @@ class FlashcardScreen extends StatefulWidget {
 class _FlashcardScreenState extends State<FlashcardScreen> {
   final WordService _wordService = WordService();
   final PageController _pageController = PageController();
-  
+
   List<Word> _words = [];
   bool _isLoading = true;
   int _currentIndex = 0;
@@ -73,7 +73,8 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
               ),
               child: Text(
                 widget.level,
-                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                    color: Colors.white, fontWeight: FontWeight.bold),
               ),
             ),
             const SizedBox(width: 8),
@@ -113,13 +114,14 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
                   child: LinearProgressIndicator(
                     value: (_currentIndex + 1) / _words.length,
                     backgroundColor: Colors.grey[300],
-                    valueColor: AlwaysStoppedAnimation(AppTheme.getLevelColor(widget.level)),
+                    valueColor: AlwaysStoppedAnimation(
+                        AppTheme.getLevelColor(widget.level)),
                   ),
                 ),
               ],
             ),
           ),
-          
+
           // Flashcards
           Expanded(
             child: Consumer<SettingsProvider>(
@@ -134,7 +136,7 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
                     final word = _words[index];
                     final isFlipped = _flippedCards.contains(index);
                     final translation = word.translations[settings.language];
-                    
+
                     return GestureDetector(
                       onTap: () => _flipCard(index),
                       child: Padding(
@@ -142,7 +144,8 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
                         child: AnimatedSwitcher(
                           duration: const Duration(milliseconds: 300),
                           child: isFlipped
-                              ? _buildBackCard(word, translation, settings.language)
+                              ? _buildBackCard(
+                                  word, translation, settings.language)
                               : _buildFrontCard(word),
                         ),
                       ),
@@ -152,7 +155,7 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
               },
             ),
           ),
-          
+
           // Navigation buttons
           Padding(
             padding: const EdgeInsets.all(24),
@@ -162,9 +165,9 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
                 ElevatedButton.icon(
                   onPressed: _currentIndex > 0
                       ? () => _pageController.previousPage(
-                          duration: const Duration(milliseconds: 300),
-                          curve: Curves.easeInOut,
-                        )
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.easeInOut,
+                          )
                       : null,
                   icon: const Icon(Icons.arrow_back),
                   label: const Text('Prev'),
@@ -176,9 +179,9 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
                 ElevatedButton.icon(
                   onPressed: _currentIndex < _words.length - 1
                       ? () => _pageController.nextPage(
-                          duration: const Duration(milliseconds: 300),
-                          curve: Curves.easeInOut,
-                        )
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.easeInOut,
+                          )
                       : null,
                   icon: const Icon(Icons.arrow_forward),
                   label: const Text('Next'),

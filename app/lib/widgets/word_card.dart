@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import '../models/word.dart';
 import '../config/theme.dart';
+import '../services/tts_service.dart';
 
 class WordCard extends StatelessWidget {
   final Word word;
@@ -15,6 +17,18 @@ class WordCard extends StatelessWidget {
     this.isLocked = false,
     this.onTap,
   });
+
+  void _speakWord() {
+    if (!kIsWeb) {
+      TtsService().speak(word.word);
+    }
+  }
+
+  void _speakExample() {
+    if (!kIsWeb) {
+      TtsService().speak(word.example);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -93,7 +107,7 @@ class WordCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header: Word + ID badge
+            // Header: Word + ID badge + TTS
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -101,12 +115,27 @@ class WordCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        word.word,
-                        style: const TextStyle(
-                          fontSize: 26,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              word.word,
+                              style: const TextStyle(
+                                fontSize: 26,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          if (!kIsWeb)
+                            IconButton(
+                              icon: Icon(Icons.volume_up, color: AppTheme.primaryColor),
+                              onPressed: _speakWord,
+                              tooltip: 'Pronounce',
+                              iconSize: 24,
+                              padding: EdgeInsets.zero,
+                              constraints: const BoxConstraints(),
+                            ),
+                        ],
                       ),
                       const SizedBox(height: 4),
                       Text(
@@ -233,6 +262,12 @@ class WordCard extends StatelessWidget {
                           fontWeight: FontWeight.w600,
                         ),
                       ),
+                      const Spacer(),
+                      if (!kIsWeb)
+                        GestureDetector(
+                          onTap: _speakExample,
+                          child: Icon(Icons.volume_up, size: 18, color: Colors.amber[700]),
+                        ),
                     ],
                   ),
                   const SizedBox(height: 8),

@@ -70,8 +70,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Text(
                   'DELE Levels',
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                        fontWeight: FontWeight.bold,
+                      ),
                 ),
               ),
             ),
@@ -83,9 +83,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   const SizedBox(height: 16),
                   _buildLevelSection('A2', 600, AppTheme.a2Color, 'Elementary'),
                   const SizedBox(height: 16),
-                  _buildLevelSection('B1', 1300, AppTheme.b1Color, 'Intermediate'),
+                  _buildLevelSection(
+                      'B1', 1300, AppTheme.b1Color, 'Intermediate'),
                   const SizedBox(height: 16),
-                  _buildLevelSection('B2', 2500, AppTheme.b2Color, 'Upper-Intermediate'),
+                  _buildLevelSection(
+                      'B2', 2500, AppTheme.b2Color, 'Upper-Intermediate'),
                 ]),
               ),
             ),
@@ -110,11 +112,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     const Text(
                       "Today's Progress",
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     if (progress.hasUnlimitedAccess)
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 4),
                         decoration: BoxDecoration(
                           color: Colors.green,
                           borderRadius: BorderRadius.circular(12),
@@ -122,7 +126,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: const Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(Icons.all_inclusive, color: Colors.white, size: 14),
+                            Icon(Icons.all_inclusive,
+                                color: Colors.white, size: 14),
                             SizedBox(width: 4),
                             Text(
                               'Unlimited',
@@ -139,7 +144,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 const SizedBox(height: 16),
                 LinearProgressIndicator(
-                  value: progress.viewedCountToday / ProgressProvider.dailyLimit,
+                  value:
+                      progress.viewedCountToday / ProgressProvider.dailyLimit,
                   backgroundColor: Colors.grey[200],
                   valueColor: AlwaysStoppedAnimation(
                     progress.hasReachedLimit && !progress.hasUnlimitedAccess
@@ -157,7 +163,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       '${progress.viewedCountToday}/${ProgressProvider.dailyLimit} words viewed',
                       style: TextStyle(color: Colors.grey[600], fontSize: 14),
                     ),
-                    if (!progress.hasUnlimitedAccess && progress.hasReachedLimit)
+                    if (!progress.hasUnlimitedAccess &&
+                        progress.hasReachedLimit)
                       const Text(
                         'Limit reached',
                         style: TextStyle(
@@ -176,7 +183,8 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildLevelSection(String level, int wordCount, Color color, String subtitle) {
+  Widget _buildLevelSection(
+      String level, int wordCount, Color color, String subtitle) {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -186,7 +194,8 @@ class _HomeScreenState extends State<HomeScreen> {
             Row(
               children: [
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   decoration: BoxDecoration(
                     color: color,
                     borderRadius: BorderRadius.circular(8),
