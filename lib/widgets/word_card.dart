@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 import 'package:provider/provider.dart';
 import '../models/word.dart';
 import '../config/theme.dart';
-import '../services/tts_service.dart';
 import '../providers/favorite_provider.dart';
 import '../providers/settings_provider.dart';
 import '../l10n/app_strings.dart';
@@ -23,18 +21,6 @@ class WordCard extends StatelessWidget {
     this.onTap,
     this.showFavorite = true,
   });
-
-  void _speakWord() {
-    if (!kIsWeb) {
-      TtsService().speak(word.word);
-    }
-  }
-
-  void _speakExample() {
-    if (!kIsWeb) {
-      TtsService().speak(word.example);
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -150,16 +136,6 @@ class WordCard extends StatelessWidget {
                               ),
                             ),
                           ),
-                          if (!kIsWeb)
-                            IconButton(
-                              icon: Icon(Icons.volume_up,
-                                  color: AppTheme.primaryColor),
-                              onPressed: _speakWord,
-                              tooltip: 'Pronounce',
-                              iconSize: 24,
-                              padding: EdgeInsets.zero,
-                              constraints: const BoxConstraints(),
-                            ),
                           if (showFavorite)
                             Consumer<FavoriteProvider>(
                               builder: (context, favorites, _) {
@@ -267,24 +243,12 @@ class WordCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              word.example,
-                              style: const TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                          if (!kIsWeb)
-                            GestureDetector(
-                              onTap: _speakExample,
-                              child: Icon(Icons.volume_up,
-                                  size: 18, color: Colors.amber[700]),
-                            ),
-                        ],
+                      Text(
+                        word.example,
+                        style: const TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                       // 번역된 예문 (영어가 아닐 때만 표시)
                       if (language != 'en' &&

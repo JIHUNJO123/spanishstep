@@ -271,11 +271,12 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
 
   Widget _buildBackCard(Word word, Translation? translation, String language) {
     final settings = context.watch<SettingsProvider>();
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Card(
       key: const ValueKey('back'),
       elevation: 8,
-      color: AppTheme.primaryColor.withOpacity(0.1),
+      color: isDark ? const Color(0xFF1565C0) : const Color(0xFF2196F3),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       child: Container(
         width: double.infinity,
@@ -285,18 +286,19 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
           children: [
             Text(
               word.word,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
-                color: Colors.grey[600],
+                color: Colors.white70,
               ),
             ),
             const SizedBox(height: 24),
             Text(
               translation?.definition ?? word.definition,
               style: const TextStyle(
-                fontSize: 28,
+                fontSize: 32,
                 fontWeight: FontWeight.bold,
+                color: Colors.white,
               ),
               textAlign: TextAlign.center,
             ),
@@ -304,9 +306,9 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
               const SizedBox(height: 16),
               Text(
                 word.definition,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 18,
-                  color: Colors.grey[600],
+                  color: Colors.white70,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -316,7 +318,7 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.5),
+                  color: Colors.white24,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Column(
@@ -324,18 +326,19 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
                     Text(
                       word.example,
                       style: const TextStyle(
-                        fontSize: 15,
+                        fontSize: 16,
                         fontWeight: FontWeight.w500,
+                        color: Colors.white,
                       ),
                       textAlign: TextAlign.center,
                     ),
                     if (translation?.example.isNotEmpty == true) ...[
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 10),
                       Text(
                         translation!.example,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 14,
-                          color: Colors.grey[600],
+                          color: Colors.white70,
                           fontStyle: FontStyle.italic,
                         ),
                         textAlign: TextAlign.center,
@@ -349,11 +352,11 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.touch_app, color: Colors.grey[400], size: 20),
+                const Icon(Icons.touch_app, color: Colors.white54, size: 20),
                 const SizedBox(width: 8),
                 Text(
                   AppStrings.get('tap_to_flip_back', settings.language),
-                  style: TextStyle(color: Colors.grey[400]),
+                  style: const TextStyle(color: Colors.white54),
                 ),
               ],
             ),

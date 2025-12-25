@@ -190,14 +190,14 @@ class _FavoritesFlashcardScreenState extends State<FavoritesFlashcardScreen> {
 
     return Card(
       key: const ValueKey('front'),
-      elevation: 4,
+      elevation: 8,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.all(32),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const SizedBox(height: 32),
             Text(
               word.word,
               style: const TextStyle(
@@ -207,11 +207,11 @@ class _FavoritesFlashcardScreenState extends State<FavoritesFlashcardScreen> {
               textAlign: TextAlign.center,
             ),
             if (settings.showExample) ...[
-              const SizedBox(height: 24),
+              const SizedBox(height: 32),
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.amber.withOpacity(0.1),
+                  color: Colors.amber.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
@@ -222,9 +222,16 @@ class _FavoritesFlashcardScreenState extends State<FavoritesFlashcardScreen> {
               ),
             ],
             const Spacer(),
-            Text(
-              AppStrings.get('tap_to_see_meaning', lang),
-              style: TextStyle(color: Colors.grey[400], fontSize: 14),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.touch_app, color: Colors.grey[400], size: 20),
+                const SizedBox(width: 8),
+                Text(
+                  AppStrings.get('tap_to_see_meaning', lang),
+                  style: TextStyle(color: Colors.grey[400]),
+                ),
+              ],
             ),
           ],
         ),
@@ -234,11 +241,13 @@ class _FavoritesFlashcardScreenState extends State<FavoritesFlashcardScreen> {
 
   Widget _buildBackCard(Word word, translation, Color levelColor, String lang) {
     final settings = context.watch<SettingsProvider>();
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Card(
       key: const ValueKey('back'),
-      elevation: 4,
-      color: levelColor.withOpacity(0.05),
+      elevation: 8,
+      color: isDark ? const Color(0xFF1565C0) : const Color(0xFF2196F3),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.all(32),
@@ -247,73 +256,60 @@ class _FavoritesFlashcardScreenState extends State<FavoritesFlashcardScreen> {
           children: [
             Text(
               word.word,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
-                color: levelColor,
+                color: Colors.white70,
+              ),
+            ),
+            const SizedBox(height: 24),
+            Text(
+              translation?.definition ?? word.definition,
+              style: const TextStyle(
+                fontSize: 32,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 24),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Column(
-                children: [
-                  Text(
-                    translation?.definition ?? word.definition,
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  if (lang != 'en' && settings.showEnglishDefinition) ...[
-                    const SizedBox(height: 8),
-                    Text(
-                      word.definition,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey[600],
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ],
-              ),
-            ),
-            if (settings.showExample) ...[
+            if (lang != 'en' && settings.showEnglishDefinition) ...[
               const SizedBox(height: 16),
+              Text(
+                word.definition,
+                style: const TextStyle(
+                  fontSize: 18,
+                  color: Colors.white70,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+            if (settings.showExample) ...[
+              const SizedBox(height: 32),
               Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.amber.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.amber.withOpacity(0.3)),
+                  color: Colors.white24,
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 child: Column(
                   children: [
                     Text(
                       word.example,
                       style: const TextStyle(
-                        fontSize: 14,
+                        fontSize: 16,
                         fontWeight: FontWeight.w500,
+                        color: Colors.white,
                       ),
                       textAlign: TextAlign.center,
                     ),
                     if (translation != null &&
                         translation.example.isNotEmpty) ...[
-                      const SizedBox(height: 6),
+                      const SizedBox(height: 10),
                       Text(
                         translation.example,
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: Colors.grey[600],
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: Colors.white70,
                           fontStyle: FontStyle.italic,
                         ),
                         textAlign: TextAlign.center,
@@ -326,7 +322,7 @@ class _FavoritesFlashcardScreenState extends State<FavoritesFlashcardScreen> {
             const Spacer(),
             Text(
               AppStrings.get('tap_to_flip_back', lang),
-              style: TextStyle(color: Colors.grey[400], fontSize: 14),
+              style: const TextStyle(color: Colors.white54, fontSize: 14),
             ),
           ],
         ),

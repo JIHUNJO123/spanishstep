@@ -7,7 +7,6 @@ import 'providers/settings_provider.dart';
 import 'providers/favorite_provider.dart';
 import 'screens/home_screen.dart';
 import 'config/theme.dart';
-import 'services/tts_service.dart';
 import 'services/purchase_service.dart';
 
 void main() async {
@@ -19,11 +18,6 @@ void main() async {
       await MobileAds.instance.initialize();
     } catch (e) {
       debugPrint('AdMob init error: $e');
-    }
-    try {
-      await TtsService().init();
-    } catch (e) {
-      debugPrint('TTS init error: $e');
     }
     try {
       await PurchaseService.instance.initialize();
@@ -51,11 +45,6 @@ class SpanishStepApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<SettingsProvider>(
       builder: (context, settings, _) {
-        // Apply TTS settings when they change
-        if (!kIsWeb) {
-          TtsService().setVolume(settings.ttsVolume);
-          TtsService().setSpeechRate(settings.ttsSpeed);
-        }
         return MaterialApp(
           title: 'Spanish Step',
           debugShowCheckedModeBanner: false,

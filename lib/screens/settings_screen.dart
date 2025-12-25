@@ -5,7 +5,6 @@ import '../providers/settings_provider.dart';
 import '../providers/progress_provider.dart';
 import '../config/theme.dart';
 import '../l10n/app_strings.dart';
-import '../services/tts_service.dart';
 import '../services/purchase_service.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -78,50 +77,6 @@ class SettingsScreen extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               _buildSection(
-                title: AppStrings.get('tts_settings', lang),
-                children: [
-                  ListTile(
-                    leading: const Icon(Icons.volume_up),
-                    title: Text(AppStrings.get('tts_volume', lang)),
-                    subtitle: Slider(
-                      value: settings.ttsVolume,
-                      min: 0.0,
-                      max: 1.0,
-                      divisions: 10,
-                      label: '${(settings.ttsVolume * 100).round()}%',
-                      onChanged: (value) {
-                        settings.setTtsVolume(value);
-                        TtsService().setVolume(value);
-                      },
-                    ),
-                  ),
-                  const Divider(height: 1),
-                  ListTile(
-                    leading: const Icon(Icons.speed),
-                    title: Text(AppStrings.get('tts_speed', lang)),
-                    subtitle: Slider(
-                      value: settings.ttsSpeed,
-                      min: 0.1,
-                      max: 1.0,
-                      divisions: 9,
-                      label: _getSpeedLabel(settings.ttsSpeed, lang),
-                      onChanged: (value) {
-                        settings.setTtsSpeed(value);
-                        TtsService().setSpeechRate(value);
-                      },
-                    ),
-                  ),
-                  Center(
-                    child: TextButton.icon(
-                      onPressed: () => TtsService().speak('Hola, ¿cómo estás?'),
-                      icon: const Icon(Icons.play_arrow),
-                      label: Text(AppStrings.get('test_tts', lang)),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              _buildSection(
                 title: AppStrings.get('premium', lang),
                 children: [
                   ListTile(
@@ -179,6 +134,7 @@ class SettingsScreen extends StatelessWidget {
                     ListTile(
                       leading: const Icon(Icons.restore),
                       title: Text(AppStrings.get('restore_purchase', lang)),
+                      subtitle: Text(AppStrings.get('restore_purchase_hint', lang)),
                       onTap: () async {
                         await PurchaseService.instance.restorePurchases();
                         if (context.mounted) {
@@ -244,12 +200,5 @@ class SettingsScreen extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  String _getSpeedLabel(double speed, String lang) {
-    if (speed <= 0.3) return AppStrings.get('speed_slow', lang);
-    if (speed <= 0.5) return AppStrings.get('speed_normal', lang);
-    if (speed <= 0.7) return AppStrings.get('speed_fast', lang);
-    return AppStrings.get('speed_very_fast', lang);
   }
 }
