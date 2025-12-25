@@ -8,9 +8,9 @@ workflows:
     environment:
       ios_signing:
         distribution_type: app_store
-        bundle_identifier: com.jihunjo.spanishStep
+        bundle_identifier: com.jihunjo.spanishstep
       vars:
-        APP_ID: 6745425133
+        APP_ID: 6756962659
       flutter: stable
       xcode: latest
       cocoapods: default
