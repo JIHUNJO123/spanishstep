@@ -143,11 +143,11 @@ class ProgressProvider extends ChangeNotifier {
   }
 
   // 레벨 진행도 업데이트 (스크롤 복원용, 무료 범위와 별개)
+  // notifyListeners 호출 안 함 - UI rebuild 필요 없음
   Future<void> updateLevelProgress(String level, int index) async {
     if (index > (_levelProgress[level] ?? 0)) {
       _levelProgress[level] = index;
       await _saveProgress();
-      notifyListeners();
     }
   }
 
