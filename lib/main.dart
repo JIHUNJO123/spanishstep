@@ -1,7 +1,9 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:provider/provider.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 import 'providers/progress_provider.dart';
 import 'providers/settings_provider.dart';
 import 'providers/favorite_provider.dart';
@@ -14,6 +16,20 @@ void main() async {
 
   // Skip AdMob initialization on web
   if (!kIsWeb) {
+    // Request App Tracking Transparency permission on iOS
+    if (Platform.isIOS) {
+      try {
+        // Wait for the widget to be ready before showing ATT dialog
+        await Future.delayed(const Duration(milliseconds: 500));
+        final status = await AppTrackingTransparency.trackingAuthorizationStatus;
+        if (status == TrackingStatus.notDetermined) {
+          await AppTrackingTransparency.requestTrackingAuthorization();
+        }
+      } catch (e) {
+        debugPrint('ATT request error: $e');
+      }
+    }
+    
     try {
       await MobileAds.instance.initialize();
     } catch (e) {

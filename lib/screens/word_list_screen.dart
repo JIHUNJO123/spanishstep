@@ -354,13 +354,6 @@ class _WordListScreenState extends State<WordListScreen> {
             return const Center(child: CircularProgressIndicator());
           }
 
-          // 무료 범위 시작점 가져오기 (고정된 값, 스크롤해도 안 바뀜)
-          final freeRangeStart = progress.getFreeRangeStart(widget.level);
-          // 무료 범위: freeRangeStart부터 30개
-          final lowerBound = freeRangeStart;
-          final upperBound = (freeRangeStart + ProgressProvider.dailyLimit - 1)
-              .clamp(0, _words.length - 1);
-
           return ListView.builder(
             controller: _scrollController,
             padding: const EdgeInsets.all(16),
@@ -368,10 +361,9 @@ class _WordListScreenState extends State<WordListScreen> {
             itemBuilder: (context, index) {
               final word = _words[index];
 
-              // 마지막 위치 기준 앞뒤 15개씩 무료
+              // 짝수 인덱스(0, 2, 4...)는 무료, 홀수 인덱스(1, 3, 5...)는 잠금
               // 무제한 액세스가 있으면 모든 단어 볼 수 있음
-              final isInFreeRange = index >= lowerBound && index <= upperBound;
-              final isLocked = !progress.hasUnlimitedAccess && !isInFreeRange;
+              final isLocked = !progress.hasUnlimitedAccess && (index % 2 == 1);
 
               return Padding(
                 padding: const EdgeInsets.only(bottom: 12),

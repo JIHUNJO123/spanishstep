@@ -1,7 +1,7 @@
 name: spanish_step
 description: Master Spanish vocabulary with 5,000 DELE words (A1-B2)
 publish_to: 'none'
-version: 1.0.0+9
+version: 1.0.3+12
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
@@ -20,6 +20,7 @@ dependencies:
 
   # Ads
   google_mobile_ads: ^4.0.0
+  app_tracking_transparency: ^2.0.6
 
   # In-App Purchase
   in_app_purchase: ^3.1.13

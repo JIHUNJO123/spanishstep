@@ -1,5 +1,5 @@
 import 'dart:io' show Platform;
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart' show kIsWeb, kDebugMode;
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class AdService {
@@ -11,16 +11,22 @@ class AdService {
   bool _isLoading = false;
 
   // AdMob IDs - Production
-  static const String rewardedAdUnitIdIOS =
+  static const String _prodRewardedAdUnitIdIOS =
       'ca-app-pub-5837885590326347/5713859000';
-  static const String rewardedAdUnitIdAndroid =
+  static const String _prodRewardedAdUnitIdAndroid =
       'ca-app-pub-5837885590326347/2170377421';
 
   // Test IDs for development
-  static const testRewardedAdUnitIdAndroid =
+  static const String _testRewardedAdUnitIdAndroid =
       'ca-app-pub-3940256099942544/5224354917';
-  static const testRewardedAdUnitIdIOS =
+  static const String _testRewardedAdUnitIdIOS =
       'ca-app-pub-3940256099942544/1712485313';
+
+  // 디버그 모드에서 테스트 광고 ID 사용
+  static String get rewardedAdUnitIdAndroid => 
+      kDebugMode ? _testRewardedAdUnitIdAndroid : _prodRewardedAdUnitIdAndroid;
+  static String get rewardedAdUnitIdIOS => 
+      kDebugMode ? _testRewardedAdUnitIdIOS : _prodRewardedAdUnitIdIOS;
 
   bool get isAdReady => _rewardedAd != null;
 
